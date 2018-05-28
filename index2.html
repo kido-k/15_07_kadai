@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Book Memo</title>
+    <script src="js/jquery-2.1.3.min.js"></script>
+    <script src="js/jquery.filedialog.js"></script>
+    <script src="js/main.js"></script>
+    <link rel="stylesheet" href="css/sample.css">
+</head>
+
+<body style="background: url(img/wood.jpg);">
+    <header>
+        <div>
+            <p>Book Memo</p>
+        </div>
+        <div>
+            <ul id="btn">
+                <li>
+                    <img src="img/save2.png" id="save" alt="">
+                </li>
+                <li>
+                    <img src="img/book2.jpg" id="bookbtn" alt="" onClick="$('#file').click();">
+                </li>
+            </ul>
+        </div>
+    </header>
+    <main>
+        <div id="selector" class="select-box01">
+            <select id="filter">
+                <option value=0>全て</option>
+                <option value=1>未入力</option>
+                <!-- <option value=2>お気に入り</option> -->
+            </select>
+        </div>
+        <div>
+            <ul id="booklist" class="list">
+            </ul>
+            <ul id="bookmemo" class="memo">
+            </ul>
+        </div>
+        <ul>
+
+        </ul>
+        <input id="file" type="file" webkitdirectory directory onChange="loadBookFolder(this.files)" style="display:none;">
+    </main>
+
+    <footer>
+        <!-- <small>G's</small> -->
+    </footer>
+</body>
+
+</html>

@@ -1,0 +1,19 @@
+@charset "utf-8";
+
+body {
+  background: linear-gradient(lightgreen, #05FBFF);
+  text-align: center;
+  height:1000px;      
+}
+#thank{
+  height:100%;
+  margin:auto;
+}
+p{
+  color: white;
+  font-size:20px;
+}
+a{
+  color: white;
+  font-size:20px;
+}

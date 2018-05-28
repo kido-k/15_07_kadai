@@ -1,0 +1,388 @@
+/*common*/
+
+html, body {
+    /*background:linear-gradient(#05FBFF,lightgreen);*/
+    width: 100%;
+    height: 100%;
+}
+
+h2{
+    font-size:18px;
+}
+
+/*header*/
+
+#header {
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    position: fixed;
+    width: 100%;
+    height: 46px;
+    background: linear-gradient(to left, #66CCFF, #00FF99);
+    z-index: 100;
+}
+
+h1 {
+    position: absolute;
+    font-size: 20px;
+    line-height: 32px;
+    font-weight: bold;
+    padding: 0;
+    text-align: center;
+    margin-top: 10px;
+    width: 100%;
+    color: #fff;
+}
+
+#menubar {
+    position: absolute;
+    height: 24px;
+    width: 24px;
+    display: inline-block;
+    box-sizing: border-box;
+    margin-top: 10px;
+    margin-left: 10px;
+    padding: 0;
+}
+
+#menubar div {
+    position: absolute;
+    left: 0;
+    height: 4px;
+    width: 24px;
+    background-color: rgb(255, 255, 255);
+    border-radius: 2px;
+    display: inline-block;
+    box-sizing: border-box;
+}
+
+#menubar div:nth-of-type(1) {
+    top: 0;
+}
+
+#menubar div:nth-of-type(2) {
+    top: 10px;
+}
+
+#menubar div:nth-of-type(3) {
+    bottom: 0;
+}
+
+#mode {
+    position: absolute;
+    background-color: rgb(255, 255, 255);
+    font-size: 14px;
+    line-height: 32px;
+    padding: 0;
+    text-align: center;
+    margin-top: 15px;
+    margin-left: 70px;
+    width: 100px;
+}
+
+#addmenu {
+    position: absolute;
+    margin-left: 250px;
+    z-index:200;
+}
+
+/*main*/
+
+#main {
+    display: flex;
+    margin-top: 46px;
+    height: 100%;
+    width: 100%;
+    /*z-index:auto;*/
+}
+
+/* sidevar */
+
+#sidebar {
+    position: relative;
+    width: 350px;
+    height: 100%;
+    overflow: hidden;
+    display: none;
+}
+
+#userinfo {
+    margin-top: 10px;
+    margin-bottom: 20px;
+    font-size: 20px;
+    text-align: center;
+}
+
+#userimage {
+    width: 150px;
+    height: 150px;
+    margin: auto;
+}
+
+#username {
+    margin: 0;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.sidemenu{
+    padding:0;
+    list-style-type: none;
+}
+
+#menu > ul{
+    margin:0;
+    padding:0;
+}
+
+li>p {
+    margin: 0;
+    margin-top: 20px;
+    margin-bottom: 0px;
+    padding:0;
+    padding-top:5px;
+    padding-bottom:5px;
+
+    color: black;
+    border-left: solid 8px rgb(80, 175, 252);/*左側の線*/
+    background: whitesmoke;/*背景色*/
+    /* margin-bottom: 5px;*/
+    line-height: 1.5;
+    border-radius: 0 15px 15px 0;/*右側の角だけ丸く*/
+    /* padding: 0.5em; */
+    /* list-style-type: none!important; */
+}
+
+.childmenu {
+    margin-left: 15px;
+}
+
+#childmenu1 {
+    display: none;
+    margin: 0;
+    padding: 0;
+}
+
+#childmenu2 {
+    display: none;
+    margin: 0;
+    padding: 0;
+}
+
+#childmenu3 {
+    display: none;
+    margin: 0;
+    padding: 0;
+}
+
+#drop_zone {
+    /* position:relative; */
+    width: 200px;
+    height: 160px;
+    border: 2px dashed #bbb;
+    display: none;
+    border-radius: 5px;
+    margin: auto;
+    color: #bbb;    
+}
+
+#drop_msg {
+    text-align: center;
+    font: 14pt bold;
+    color: #bbb;
+    display: none;
+}
+
+#drop_image{
+    margin-top:10px;
+    width: 150px;
+    height: 150px;
+    display: none;
+    /* border: 2px dashed rgb(255, 93, 93); */
+}
+
+#uimage_change {
+    width: 150px;
+    padding: 10px;
+    border-radius: 100px;
+    background-color: #1da1f2;
+    border: 1px solid #1da1f2;
+    color: #fff;
+}
+
+#uimage_cancel {
+    width: 100px;
+    padding: 10px;
+    display: none;
+    border-radius: 100px;
+    background-color: #1da1f2;
+    border: 1px solid #1da1f2;
+    color: #fff;
+}
+
+#uimage_save {
+    width: 100px;
+    padding: 10px;
+    display: none;
+    border-radius: 100px;
+    background-color: #ffa653;
+    border: 1px solid #ffa653;
+    color: #fff;
+}
+
+#icon_drop_zone {
+    /* position:relative; */
+    width: 100px;
+    height: 100px;
+    border: 2px dashed #bbb;
+    display: inline-block;
+    border-radius: 5px;
+    margin: auto;
+    color: #bbb;
+    margin-left: 50px;
+}
+
+#icon_msg {
+    text-align: center;
+    font: 9pt bold;
+    color: #bbb;
+    display: inline-block;
+    margin-top: 30px;
+    margin-bottom: 30px;
+}
+
+#icon_image{
+    margin:auto;
+    width: 100px;
+    height: 100px;
+    display: none;
+    /* border: 2px dashed rgb(255, 93, 93); */
+}
+
+#icon_change {
+    width: 100px;
+    padding: 10px;
+    display: inline-block;
+    /* border-radius: 100px; */
+    background-color: #1da1f2;
+    border: 1px solid #1da1f2;
+    color: #fff;
+}
+
+#icon_save {
+    width: 100px;
+    padding: 10px;
+    display: none;
+    /* border-radius: 100px; */
+    background-color: #c4c4c4;
+    border: 1px solid #c4c4c4;
+    color: #fff;
+}
+
+/* message area*/
+#bord_title{
+    position: absolute;
+    top:7%;
+    left:70%;
+    height:9%;
+    width:28%;
+    background: #fff;
+    z-index: 100;
+    overflow: auto;
+}
+
+#bord_content{
+    position: absolute;
+    top:17%;
+    left:70%;
+    height:50%;
+    width:28%;
+    background: #fff;
+    z-index: 100;
+    overflow: auto;
+}
+
+#message{
+    position: absolute;
+    top:68%;
+    left:70%;
+    height:19%;
+    width:27%;
+    background: #fff;
+    z-index: 100;
+    overflow: auto;
+}
+
+#command{
+    position: absolute;
+    top:88%;
+    left:70%;
+    height:9%;
+    width:28%;
+    /* background: #fff; */
+    z-index: 100;
+    overflow: auto;
+}
+
+#dialogflow{
+    position: absolute;
+    top:17%;
+    left:70%;
+    height:80%;
+    width:28%;
+    background: #fff;
+    z-index: 100;
+    overflow: auto; 
+}
+
+#send{
+    height:30px;
+    width:100px;
+    float: right;
+    border-radius: 50px;
+    background-color: #1da1f2;
+    border: 1px solid #1da1f2;
+    color: #fff;
+}
+
+/* map */
+
+#map {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    /* z-index: -10; */
+}
+
+#login {
+    display: flex;
+    height: 20px;
+    margin-bottom: 20px;
+    /*z-index:auto;*/
+}
+
+#loginname {
+    font-size: 14px;
+    margin: 0;
+}
+
+#loadin_end {
+    position: absolute;
+    /*z-index:10;*/
+}
+
+#output {
+    background-color: rgb(235, 255, 255);
+    margin-left: 30px;
+    border-style: double;
+    border-color: blue;
+    width: 400px;
+}
+
+footer {
+    background-color: #fff;
+    text-align: center;
+}
