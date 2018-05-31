@@ -8,6 +8,8 @@ var userimage_url;
 var signbord_url;
 var signbordmsg;
 
+var login = false;
+
 $(function () {
 
     // Initialize Firebase
@@ -43,24 +45,10 @@ $(function () {
     // });
 
     const user_id = localStorage.getItem("user_id");
-
-    const xmlhttp = createXmlHttpRequest();
-
-    if (xmlhttp != null) {
-        xmlhttp.open("POST", "php/question1.php", true);
-        xmlhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-        const data = "user_id=" + user_id;
-        xmlhttp.send(data);
-        var res = xmlhttp.responseText;
-        q1finish = true;
-
-        if (user_id != null) {
-            //ログインボタンの非表示
-
-            //user_infoテーブルから情報を取得
-        }
+    if (user_id != null) {
+        loadUserInfo(user_id);
+        loadBookFolder(user_id);
     }
-
     // Submit:MSG送信
     $("#send").on("click", function () {
         sendData();
@@ -78,15 +66,46 @@ $(function () {
     btnAction(user_id);
 
     //画像データのアップロード
-    downloadImageData(firebase, user_id);
+    // downloadImageData(firebase, user_id);
 
     //変更画像の読み込み保存
     dragFile();
     icondragFile();
 
-    // //Googleログアウト
+    //ログイン
+    $("#login").on("click", function () {
+        // const xmlhttp = createXmlHttpRequest();
+        $.ajax({
+            url: "select_userlogin.php",
+            type: "POST",
+            dataType: "text",
+            data: { 'email': $('#email').val(), 'password': $('#pass').val() },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                console.log("ajax通信に失敗しました");
+            },
+            success: function (res) {
+                console.log("ajax通信に成功しました");
+                console.log(res);
+                localStorage.setItem("user_id", res);
+                loadUserInfo(res);
+                $("#loginmenu").css({ display: 'none' });
+                // $("#sidebar").css({ display: 'inline-block' });
+                $("#logout").css({ display: 'inline-block' });
+            }
+        });
+    });
+
+    $("#makeaccount").on("click", function(){
+        window.location.href = "entry.php";
+    });
+
+    //ログアウト
     $("#logout").on("click", function () {
-        googleLogout();
+        localStorage.removeItem("user_id");
+        location.reload();
+        $("#loginmenu").css({ display: 'inline-block' });
+        $("#sidebar").css({ display: 'none' });
+        login = false;
     });
 
     //チェックボタンによるアクション確認用
@@ -136,13 +155,28 @@ function sendData() {
 }
 
 function controlMenu() {
+    var displayLoginBar = false;
     var displayMenuBar = false;
     $("#menubar").on("click", function () {
-        if (displayMenuBar) {
+        if (login == false && displayLoginBar == true) {
+            $("#loginmenu").css({ display: 'none' });
             $("#sidebar").css({ display: 'none' });
+            displayLoginBar = false;
+            displayMenuBar = false;
+        } else if (login == false && displayLoginBar == false) {
+            $("#loginmenu").css({ display: 'inline' });
+            $("#sidebar").css({ display: 'none' });
+            displayLoginBar = true;
+            displayMenuBar = false;
+        } else if (login == true && displayMenuBar == true) {
+            $("#loginmenu").css({ display: 'none' });
+            $("#sidebar").css({ display: 'none' });
+            displayLoginBar = false;
             displayMenuBar = false;
         } else {
+            $("#loginmenu").css({ display: 'none' });
             $("#sidebar").css({ display: 'inline' });
+            displayLoginBar = false;
             displayMenuBar = true;
         }
     });
@@ -182,6 +216,12 @@ function controlMenu() {
 }
 
 function btnAction(user_id) {
+    //ログインボタン
+    // $("#login").on("click", function () {
+    //     $("#loginmenu").css({ display: 'none' });
+    //     $("#sidebar").css({ display: 'inline-block' });
+    // });
+
     //ユーザーイメージ画像の変更ボタン
     $("#uimage_change").on("click", function () {
         $("#drop_zone").css({ display: 'inline-block' });
@@ -238,48 +278,48 @@ function btnAction(user_id) {
 
 }
 
-function downloadImageData(firebase, user_id) {
-    var storageRef = firebase.storage().ref();
-    const userimage = storageRef.child(user_id + "userimage");
-    if (userimage != null) {
-        userimage.getDownloadURL().then(function (url) {
-            $('#userimage').attr('src', url);
-            userimage_url = url;
-        }).catch(function (error) {
-            console.log(error);
-        });
-    }
-    const signbordimage = storageRef.child(user_id + "iconimage");
-    if (signbordimage != null) {
-        signbordimage.getDownloadURL().then(function (url) {
-            $('#icon_image').attr('src', url);
-            $('#icon_image').css({ display: 'inline-block' });
-            $('#icon_msg').css({ display: 'none' });
-            signbord_url = url;
-        }).catch(function (error) {
-            console.log(error);
-        });
-    }
-}
+// function downloadImageData(firebase, user_id) {
+//     var storageRef = firebase.storage().ref();
+//     const userimage = storageRef.child(user_id + "userimage");
+//     if (userimage != null) {
+//         userimage.getDownloadURL().then(function (url) {
+//             $('#userimage').attr('src', url);
+//             userimage_url = url;
+//         }).catch(function (error) {
+//             console.log(error);
+//         });
+//     }
+//     const signbordimage = storageRef.child(user_id + "iconimage");
+//     if (signbordimage != null) {
+//         signbordimage.getDownloadURL().then(function (url) {
+//             $('#icon_image').attr('src', url);
+//             $('#icon_image').css({ display: 'inline-block' });
+//             $('#icon_msg').css({ display: 'none' });
+//             signbord_url = url;
+//         }).catch(function (error) {
+//             console.log(error);
+//         });
+//     }
+// }
 
-function uploadImageData(firebase, user_id, position) {
-    // var mountainImagesRef = storageRef.child("imgs/monkey.png");
-    if (files != null && position == "uimage") {
-        const dragfile = files[0];
-        const storageRef = firebase.storage().ref(user_id + "userimage");
-        storageRef.put(dragfile).then(function (snapshot) {
-            alert("保存しました");
-        });
-        userimage_url = pre_userimage_url;
-    } else if (iconfiles != null && position == "iconimage") {
-        const iconfile = iconfiles[0];
-        const storageRef = firebase.storage().ref(user_id + "iconimage");
-        storageRef.put(iconfile).then(function (snapshot) {
-            alert("保存しました");
-        });
-        signbord_url = pre_signbord_url;
-    }
-}
+// function uploadImageData(firebase, user_id, position) {
+//     // var mountainImagesRef = storageRef.child("imgs/monkey.png");
+//     if (files != null && position == "uimage") {
+//         const dragfile = files[0];
+//         const storageRef = firebase.storage().ref(user_id + "userimage");
+//         storageRef.put(dragfile).then(function (snapshot) {
+//             alert("保存しました");
+//         });
+//         userimage_url = pre_userimage_url;
+//     } else if (iconfiles != null && position == "iconimage") {
+//         const iconfile = iconfiles[0];
+//         const storageRef = firebase.storage().ref(user_id + "iconimage");
+//         storageRef.put(iconfile).then(function (snapshot) {
+//             alert("保存しました");
+//         });
+//         signbord_url = pre_signbord_url;
+//     }
+// }
 
 function dragFile() {
     // Setup the dnd listeners.
@@ -395,22 +435,113 @@ function controlMassege(id) {
     });
 };
 
+function loadUserInfo(user_id) {
+    // const user_id = localStorage.getItem("user_id");
+    // const user_id = "2";
+    $.ajax({
+        url: "select_userinfo.php",
+        type: "POST",
+        dataType: "text",
+        data: { 'user_id': user_id },
+        error: function (XMLHttpRequest, textStatus, errorThrown) {
+            console.log("ajax通信に失敗しました");
+        },
+        success: function (res) {
+            console.log("ajax通信に成功しました");
+            console.log(res);
+            // localStorage.setItem("user_id",res);
+            $("#loginmenu").css({ display: 'none' });
+            // $("#sidebar").css({ display: 'inline-block' });
+            $("#logout").css({ display: 'inline-block' });
+            login = true;
+        }
+    });
+};
+
 function createXmlHttpRequest() {
     var xmlhttp = null;
     if (window.ActiveXObject) {
         try {
             xmlhttp = new ActiveXObject("Msxml2.XMLHTTP");
-        }
-        catch (e) {
+        } catch (e) {
             try {
                 xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
-            }
-            catch (e2) {
+            } catch (e2) {
             }
         }
-    }
-    else if (window.XMLHttpRequest) {
+    } else if (window.XMLHttpRequest) {
         xmlhttp = new XMLHttpRequest();
     }
     return xmlhttp;
 };
+
+function loadBookFolder(user_id) {
+    // loadLocaStrage();
+    // clearLocalStrage();
+    // clearBookList();
+    // const xmlhttp = createXmlHttpRequest();
+    $.ajax({
+        url: "select_imginfo.php",
+        type: "POST",
+        dataType: "text",
+        data: { 'user_id': user_id},
+        error: function (XMLHttpRequest, textStatus, errorThrown) {
+            console.log("ajax通信に失敗しました");
+        },
+        success: function (res) {
+            console.log("ajax通信に成功しました");
+            console.log(res);
+         }
+    });
+    // for (i = 0; i < files.length; i++) {
+    //     var book = new Object();
+    //     filenames.push(files[i].name);
+    //     if (booknames.indexOf(files[i].name) >= 0) {
+    //         // break;
+    //     } else if (booknames.indexOf(files[i].name) == -1) {
+    //         book.id = maxid;
+    //         book.name = files[i].name;
+    //         book.path = files[i].webkitRelativePath;
+    //         book.memo = "";
+    //         bookbox.push(book);
+    //         booknames.push(book.name);
+    //         maxid += 1;
+    //     }
+    // }
+    // for (i = 0; i < files.length; i++) {
+    //     if (filenames.indexOf(booknames[i]) >= 0) {
+    //         // break;
+    //     } else if (filenames.indexOf(booknames[i]) == -1) {
+    //         bookbox.splice(i, 1);
+    //         i -= i;
+    //     }
+    // }
+    // makeBookList(bookbox);
+};
+
+// function makeBookList(bookbox) {
+//     $("#booklist").empty();
+//     $("#bookmemo").empty();
+//     for (i = 0; i < bookbox.length; i++) {
+//         var str_img = img + bookbox[i].id;
+//         var str_memo = memo + bookbox[i].id;
+//         output = bookbox[i].path;
+//         memoval = bookbox[i].memo;
+//         if (i == 0) {
+//             $('#booklist').append('<li><img id=' + str_img + ' src="' + output + '"alt="" class="image" onClick="clickImage(this)"></li>');
+//             $('#bookmemo').append('<li><textarea id=' + str_memo + ' cols="30" rows="10" class="select text">' + memoval + '</textarea>');
+//         }
+//         else {
+//             $('#booklist').append('<li><img id=' + str_img + ' src="' + output + '"alt="" class="image" onClick="clickImage(this)"></li>');
+//             $('#bookmemo').append('<li><textarea id=' + str_memo + ' cols="30" rows="10" class="hide text">' + memoval + '</textarea>');
+//         }
+//     }
+// };
+
+// function clearBookList() {
+//     bookbox = [];
+//     bookid = [];
+//     booknames = [];
+//     bookpaths = [];
+//     bookmemos = [];
+// }

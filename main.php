@@ -25,14 +25,14 @@
             <div></div>
         </div>
         <div>
-            <button id="login">ログイン</button>
-        </div>
-        <div>
             <select id="mode">
                 <option value="0">VIEW</option>
                 <option value="1">ADD</option>
                 <option value="2">DELETE</option>
             </select>
+        </div>
+        <div>
+            <button id="logout">ログアウト</button>
         </div>
     </div>
     <!-- Loading画面 -->
@@ -42,13 +42,15 @@
 
     <!-- コンテンツ表示画面 -->
     <div id="main">
-        <div id="addmenu">
-            <input id="location" type="text" style="display:none;">
-            <input id="content" type="text" style="display:none;">
+        <div id="loginmenu">
+                <input id="email" type="text" placeholder="メールアドレス">
+                <input id="pass" type="password" placeholder="パスワード">
+                <button id="login">ログイン</button>
+                <button id="makeaccount">アカウント作成</button>
         </div>
         <div id="sidebar">
             <div id="userinfo">
-                <img id="userimage" src="" alt="">
+                <img id="userimage" src="https://images-na.ssl-images-amazon.com/images/I/61ZIUhzxcxL._SL500_SR160,120_.jpg" alt="">
                 <div id="drop_zone">
                     <p id="drop_msg">ここにファイルをドラッグしてください</p>
                     <img id="drop_image" src="" alt="">
@@ -94,24 +96,13 @@
                 </ul>
             </div>
         </div>
-        <div id="bord_title" style="display:none;">
-            <h2 id="bord_title_h2"></h2>
+        <div>
+            <ul id="booklist" class="list">
+            </ul>
+            <ul id="bookmemo" class="memo">
+            </ul>
         </div>
-        <div id="bord_content" style="display:none;">
-            <!-- <p id="bord_content_p"></p> -->
-        </div>
-        <!-- <div id="message" style="display:none;">
-            </div> -->
-        <textarea id="message" style="display:none;"></textarea>
-  
-        <div id="command" style="display:none;" placeholder="送信メッセージを入力してください">
-            <button id="send">送信</button>
-        </div>
-        <div id="map"></div>
     </div>
-    <!-- <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDNpw1Pw0FWIM8qleaq3dNChBrhasybRtY&callback=initMap" async
-    defer></script> -->
-    <!-- <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDNpw1Pw0FWIM8qleaq3dNChBrhasybRtY" async defer></script> -->
     <button id="check">チャットボットあり</button>
     <button id="check2">チャットボットなし</button>
 </body>

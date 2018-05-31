@@ -6,8 +6,8 @@ html, body {
     height: 100%;
 }
 
-h2{
-    font-size:18px;
+h2 {
+    font-size: 18px;
 }
 
 /*header*/
@@ -78,14 +78,25 @@ h1 {
     padding: 0;
     text-align: center;
     margin-top: 15px;
-    margin-left: 70px;
+    margin-left: 8%;
     width: 100px;
 }
 
 #addmenu {
     position: absolute;
     margin-left: 250px;
-    z-index:200;
+    z-index: 200;
+}
+
+#logout {
+    position: absolute;
+    display:none;
+    margin-top: 2px;
+    margin-left: 80%;
+    padding: 10px;
+    background-color: rgb(165, 193, 253);
+    border: 1px solid #fff;
+    color: rgb(0, 0, 0);
 }
 
 /*main*/
@@ -108,6 +119,46 @@ h1 {
     display: none;
 }
 
+#loginmenu{
+    position: relative;
+    background-color:#fff;
+    border-block-start: #bbb;
+    width: 500px;
+    height: 300px;
+    overflow: hidden;
+    display: none;
+}
+
+#email{
+    margin-top: 20px;
+    font-size:18px;
+}
+
+#pass{
+    margin-top: 20px;    
+    font-size:18px;
+}
+
+#login {
+    margin-top:20px;
+    width: 150px;
+    padding: 10px;
+    border-radius: 100px;
+    background-color: #1da1f2;
+    border: 1px solid #1da1f2;
+    color: #fff;
+}
+
+#makeaccount {
+    margin-top:20px;
+    width: 150px;
+    padding: 10px;
+    border-radius: 100px;
+    background-color: #f2af1d;
+    border: 1px solid #1da1f2;
+    color: #fff;
+}
+
 #userinfo {
     margin-top: 10px;
     margin-bottom: 20px;
@@ -127,30 +178,32 @@ h1 {
     margin-bottom: 10px;
 }
 
-.sidemenu{
-    padding:0;
+.sidemenu {
+    padding: 0;
     list-style-type: none;
 }
 
-#menu > ul{
-    margin:0;
-    padding:0;
+#menu>ul {
+    margin: 0;
+    padding: 0;
 }
 
 li>p {
     margin: 0;
     margin-top: 20px;
     margin-bottom: 0px;
-    padding:0;
-    padding-top:5px;
-    padding-bottom:5px;
-
+    padding: 0;
+    padding-top: 5px;
+    padding-bottom: 5px;
     color: black;
-    border-left: solid 8px rgb(80, 175, 252);/*左側の線*/
-    background: whitesmoke;/*背景色*/
+    border-left: solid 8px rgb(80, 175, 252);
+    /*左側の線*/
+    background: whitesmoke;
+    /*背景色*/
     /* margin-bottom: 5px;*/
     line-height: 1.5;
-    border-radius: 0 15px 15px 0;/*右側の角だけ丸く*/
+    border-radius: 0 15px 15px 0;
+    /*右側の角だけ丸く*/
     /* padding: 0.5em; */
     /* list-style-type: none!important; */
 }
@@ -185,7 +238,7 @@ li>p {
     display: none;
     border-radius: 5px;
     margin: auto;
-    color: #bbb;    
+    color: #bbb;
 }
 
 #drop_msg {
@@ -195,8 +248,8 @@ li>p {
     display: none;
 }
 
-#drop_image{
-    margin-top:10px;
+#drop_image {
+    margin-top: 10px;
     width: 150px;
     height: 150px;
     display: none;
@@ -253,8 +306,8 @@ li>p {
     margin-bottom: 30px;
 }
 
-#icon_image{
-    margin:auto;
+#icon_image {
+    margin: auto;
     width: 100px;
     height: 100px;
     display: none;
@@ -282,64 +335,65 @@ li>p {
 }
 
 /* message area*/
-#bord_title{
+
+#bord_title {
     position: absolute;
-    top:7%;
-    left:70%;
-    height:9%;
-    width:28%;
+    top: 7%;
+    left: 70%;
+    height: 9%;
+    width: 28%;
     background: #fff;
     z-index: 100;
     overflow: auto;
 }
 
-#bord_content{
+#bord_content {
     position: absolute;
-    top:17%;
-    left:70%;
-    height:50%;
-    width:28%;
+    top: 17%;
+    left: 70%;
+    height: 50%;
+    width: 28%;
     background: #fff;
     z-index: 100;
     overflow: auto;
 }
 
-#message{
+#message {
     position: absolute;
-    top:68%;
-    left:70%;
-    height:19%;
-    width:27%;
+    top: 68%;
+    left: 70%;
+    height: 19%;
+    width: 27%;
     background: #fff;
     z-index: 100;
     overflow: auto;
 }
 
-#command{
+#command {
     position: absolute;
-    top:88%;
-    left:70%;
-    height:9%;
-    width:28%;
+    top: 88%;
+    left: 70%;
+    height: 9%;
+    width: 28%;
     /* background: #fff; */
     z-index: 100;
     overflow: auto;
 }
 
-#dialogflow{
+#dialogflow {
     position: absolute;
-    top:17%;
-    left:70%;
-    height:80%;
-    width:28%;
+    top: 17%;
+    left: 70%;
+    height: 80%;
+    width: 28%;
     background: #fff;
     z-index: 100;
-    overflow: auto; 
+    overflow: auto;
 }
 
-#send{
-    height:30px;
-    width:100px;
+#send {
+    height: 30px;
+    width: 100px;
     float: right;
     border-radius: 50px;
     background-color: #1da1f2;
@@ -355,23 +409,6 @@ li>p {
     height: 100%;
     overflow: hidden;
     /* z-index: -10; */
-}
-
-#login {
-    display: flex;
-    height: 20px;
-    margin-bottom: 20px;
-    /*z-index:auto;*/
-}
-
-#loginname {
-    font-size: 14px;
-    margin: 0;
-}
-
-#loadin_end {
-    position: absolute;
-    /*z-index:10;*/
 }
 
 #output {
