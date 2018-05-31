@@ -50,7 +50,7 @@
         </div>
         <div id="sidebar">
             <div id="userinfo">
-                <img id="userimage" src="https://images-na.ssl-images-amazon.com/images/I/61ZIUhzxcxL._SL500_SR160,120_.jpg" alt="">
+                <img id="userimage" src="img/monkey.png" alt="">
                 <div id="drop_zone">
                     <p id="drop_msg">ここにファイルをドラッグしてください</p>
                     <img id="drop_image" src="" alt="">
@@ -61,20 +61,26 @@
                 <button id="uimage_save">保存</button>
             </div>
             <div id="menu">
-                <ul>
+                <p id="accountname"></p>
+                <p>いいね</p>
+                <p id="good">0</p>
+                <p>フォロワー</p>
+                <p id="follower">0</p>
+                <p>イメージ数</p>
+                <p id="imagenum">0</p>
+                
+                <!-- <ul>
                     <li class="sidemenu">
                         <p>
                             <a id="menu1">マップアイコン</a>
                         </p>
                         <ul id="childmenu1">
-                            <!-- <li class="childmenu"></li> -->
                             <div id="icon_drop_zone">
                                 <p id="icon_msg">ここにファイルをドラッグしてください</p>
                                 <img id="icon_image" src="" alt="">
                                 <button id="icon_change">変更</button>
                                 <button id="icon_save">保存</button>
                             </div>
-                            <!-- <li class="childmenu">子メニュー 1-2</li> -->
                         </ul>
                     </li>
                     <li class="sidemenu">
@@ -93,17 +99,17 @@
                             <li class="childmenu">子メニュー 3-2</li>
                         </ul>
                     </li>
-                </ul>
+                </ul> -->
             </div>
         </div>
-        <div>
+        <div style="display:flex">
             <ul id="booklist" class="list">
             </ul>
             <ul id="bookmemo" class="memo">
             </ul>
         </div>
     </div>
-    <button id="check">チャットボットあり</button>
+    <button id="check">チェック</button>
     <button id="check2">チャットボットなし</button>
 </body>
 

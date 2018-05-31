@@ -22,10 +22,10 @@ $view="";
 if($status==false) {
     //execute（SQL実行時にエラーがある場合）
   $error = $stmt->errorInfo();
-  ChromePhp::log("false");
+  // ChromePhp::log("false");
   exit("ErrorQuery:".$error[2]);
 }else{
-  ChromePhp::log("true");  
+  // ChromePhp::log("true");
   //Selectデータの数だけ自動でループしてくれる
   //FETCH_ASSOC=http://php.net/manual/ja/pdostatement.fetch.php
   $userData = array();
@@ -39,7 +39,7 @@ if($status==false) {
           'age' => $result['age']          
    );
   }
-  ChromePhp::log($userData);
+  // ChromePhp::log($userData);
   $jsonTest=json_encode($userData,JSON_UNESCAPED_UNICODE);
   echo $jsonTest;
 }

@@ -70,7 +70,7 @@ $(function () {
 
     //変更画像の読み込み保存
     dragFile();
-    icondragFile();
+    // icondragFile();
 
     //ログイン
     $("#login").on("click", function () {
@@ -95,7 +95,7 @@ $(function () {
         });
     });
 
-    $("#makeaccount").on("click", function(){
+    $("#makeaccount").on("click", function () {
         window.location.href = "entry.php";
     });
 
@@ -110,10 +110,7 @@ $(function () {
 
     //チェックボタンによるアクション確認用
     $("#check").on("click", function () {
-        $("#dialogflow").css({ display: 'inline' });
-        $("#bord_content").css({ display: 'none' });
-        $("#message").css({ display: 'none' });
-        $("#command").css({ display: 'none' });
+        loadBookFolder(user_id);
     });
 
     $("#check2").on("click", function () {
@@ -448,7 +445,8 @@ function loadUserInfo(user_id) {
         },
         success: function (res) {
             console.log("ajax通信に成功しました");
-            console.log(res);
+            const result = JSON.parse(res);
+            $("#accountname").html(result.account);
             // localStorage.setItem("user_id",res);
             $("#loginmenu").css({ display: 'none' });
             // $("#sidebar").css({ display: 'inline-block' });
@@ -479,35 +477,26 @@ function loadBookFolder(user_id) {
     // loadLocaStrage();
     // clearLocalStrage();
     // clearBookList();
-    // const xmlhttp = createXmlHttpRequest();
+    var result = "";
     $.ajax({
         url: "select_imginfo.php",
         type: "POST",
         dataType: "text",
-        data: { 'user_id': user_id},
+        data: { 'user_id': user_id },
         error: function (XMLHttpRequest, textStatus, errorThrown) {
             console.log("ajax通信に失敗しました");
         },
         success: function (res) {
             console.log("ajax通信に成功しました");
-            console.log(res);
-         }
+            result = JSON.parse(res);
+            // console.log(result[0]);
+            for (i = 0; i < result.length; i++) {
+                $('#booklist').append('<li style="list-style:none;"><img id= ' + "img" + i + ' src="' + result[i].img_data + '" style="height:180px;">' + '</li>');
+                $('#bookmemo').append('<li style="list-style:none;"><textarea id=' + "abstract" + i + ' style="height:180px;"> ' + result[i].abstract + '</textarea>');
+            }
+        }
     });
-    // for (i = 0; i < files.length; i++) {
-    //     var book = new Object();
-    //     filenames.push(files[i].name);
-    //     if (booknames.indexOf(files[i].name) >= 0) {
-    //         // break;
-    //     } else if (booknames.indexOf(files[i].name) == -1) {
-    //         book.id = maxid;
-    //         book.name = files[i].name;
-    //         book.path = files[i].webkitRelativePath;
-    //         book.memo = "";
-    //         bookbox.push(book);
-    //         booknames.push(book.name);
-    //         maxid += 1;
-    //     }
-    // }
+
     // for (i = 0; i < files.length; i++) {
     //     if (filenames.indexOf(booknames[i]) >= 0) {
     //         // break;

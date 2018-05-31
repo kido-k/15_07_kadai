@@ -18,8 +18,8 @@ $stmt->bindValue(':a1', $email, PDO::PARAM_STR);
 $stmt->bindValue(':a2', $password, PDO::PARAM_STR);
 $status = $stmt->execute();
 
-ChromePhp::log("$email");
-ChromePhp::log("$password");
+// ChromePhp::log("$email");
+// ChromePhp::log("$password");
 
 //３．データ表示
 $view = "";
@@ -34,12 +34,12 @@ if ($status == false) {
     while ($result = $stmt->fetch(PDO::FETCH_ASSOC)) {
         $view .= $result["user_id"];
     }
-    ChromePhp::log($view);
+    // ChromePhp::log($view);
     if ($view == "") {
-    ChromePhp::log("false");        
+    // ChromePhp::log("false");       
         echo "false";
     } else{
-    ChromePhp::log("true");                
+    // ChromePhp::log("true");            
     //   return $view;
       echo $view;      
     }
