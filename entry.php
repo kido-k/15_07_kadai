@@ -16,7 +16,7 @@
         <!-- <img id="icon" src="imgs/SignBoard.jpg" alt=""> -->
         <h1 id="title">Image投稿アプリ</h1>
     </div>
-    <form method="post" action="insert.php">
+    <form method="post" action="insert_userinfo.php">
         <div id="main">
             <div class="input-box">
                 <input id="account" name="account" class="" type="text" autocomplete="off" maxlength="50" required="true" placeholder="アカウント名">

@@ -8,13 +8,12 @@ try {
 
 include 'ChromePhp.php';
 
-$user_id=$_POST["user_id"];
-ChromePhp::log($user_id);
+// $user_id=$_POST["user_id"];
 
 //２．データ登録SQL作成
-$sql = "SELECT ui.img_id, ui.faborate, ui.sort, ui.row, ui.coumn, ii.img_name,ii.img_data,ii.auther,ii.category,ii.abstract FROM user_img ui INNER JOIN img_info ii ON ui.img_id = ii.img_id where ui.user_id=:a1 order by ui.sort";
+$sql = "SELECT ii.img_id, ii.img_name, ii.img_data, ii.user_id, ii.category, ii.abstract, ii.sysdate, ui.account FROM img_info ii INNER JOIN user_info ui ON ii.user_id = ui.user_id order by ii.sysdate desc LIMIT 0, 30";
 $stmt = $pdo->prepare($sql);
-$stmt->bindValue(':a1', $user_id, PDO::PARAM_STR);
+// $stmt->bindValue(':a1', $user_id, PDO::PARAM_STR);
 $status = $stmt->execute();
 
 //３．データ表示
@@ -28,19 +27,17 @@ if($status==false) {
   // ChromePhp::log("true");
   //Selectデータの数だけ自動でループしてくれる
   //FETCH_ASSOC=http://php.net/manual/ja/pdostatement.fetch.php
-  $userData = array();
+  $imgData = array();
   while($result = $stmt->fetch(PDO::FETCH_ASSOC)){
    $imgData[]=array(
           'img_id' => $result['img_id'],
-          'faborate' => $result['faborate'],
-          'sort' => $result['sort'],
-          'row' => $result['row'],
-          'coumn' => $result['coumn'],
           'img_name' => $result['img_name'],
           'img_data' => $result['img_data'],
-          'auther' => $result['auther'],
+          'user_id' => $result['user_id'],
           'category' => $result['category'],
-          'abstract' => $result['abstract']
+          'abstract' => $result['abstract'],
+          'sysdate' => $result['sysdate'],
+          'account' => $result['account'],          
    );
   }
   // ChromePhp::log($imgData);

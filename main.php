@@ -7,18 +7,17 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <script src="https://www.gstatic.com/firebasejs/4.12.1/firebase.js"></script>
     <script src="js/jquery-2.1.3.min.js"></script>
-    <!-- <script src="js/google-account.js"></script> -->
-    <!-- <script src="js/userInfo.js"></script> -->
-    <!-- <script src="js/map-control.js"></script> -->
     <script src="js/main.js"></script>
-    <!-- <script src="js/signbord.js"></script> -->
+    <link rel="shortcut icon" href="img/book.jpg">
     <link rel="stylesheet" href="css/style.css">
-    <title>SIGN-B</title>
+    <title>POST</title>
 </head>
 
 <body>
     <div id="header">
-        <h1 id="title">SIGN-B</h1>
+        <h1 id="title">
+            <a href="main.php" style="cursor: pointer;text-decoration:none;color:white;">POST</a>
+        </h1>
         <div id="menubar">
             <div></div>
             <div></div>
@@ -26,13 +25,17 @@
         </div>
         <div>
             <select id="mode">
-                <option value="0">VIEW</option>
-                <option value="1">ADD</option>
-                <option value="2">DELETE</option>
+                <option value="0">みんなの投稿</option>
+                <option value="1">自分の投稿</option>
+                <!-- <option value="2">DELETE</option> -->
             </select>
         </div>
-        <div>
-            <button id="logout">ログアウト</button>
+        <div id="tool_bar" style="display:flex">
+            <input id="search" type="text" placeholder="  検索はここから">
+            <p id="add_button" style="display:none">⊕</p>
+            <p id="delete_button" style="display:none">⊖</p>
+            <!-- <img id="add_button" src="img/add_button.jpg" alt=""> -->
+            <!-- <img id="home_button" src="img/home_button.jpg" alt=""> -->
         </div>
     </div>
     <!-- Loading画面 -->
@@ -55,62 +58,52 @@
                     <p id="drop_msg">ここにファイルをドラッグしてください</p>
                     <img id="drop_image" src="" alt="">
                 </div>
-                <p id="username"></p>
+                <p id="accountname"></p>
                 <button id="uimage_change">イメージ変更</button>
                 <button id="uimage_cancel">戻る</button>
                 <button id="uimage_save">保存</button>
             </div>
             <div id="menu">
-                <p id="accountname"></p>
-                <p>いいね</p>
-                <p id="good">0</p>
-                <p>フォロワー</p>
-                <p id="follower">0</p>
-                <p>イメージ数</p>
-                <p id="imagenum">0</p>
-                
-                <!-- <ul>
-                    <li class="sidemenu">
-                        <p>
-                            <a id="menu1">マップアイコン</a>
-                        </p>
-                        <ul id="childmenu1">
-                            <div id="icon_drop_zone">
-                                <p id="icon_msg">ここにファイルをドラッグしてください</p>
-                                <img id="icon_image" src="" alt="">
-                                <button id="icon_change">変更</button>
-                                <button id="icon_save">保存</button>
-                            </div>
-                        </ul>
-                    </li>
-                    <li class="sidemenu">
-                        <p>
-                            <a id="menu2">SignBord一覧</a>
-                        </p>
-                        <ul id="childmenu2" class="childmenu">
-                        </ul>
-                    </li>
-                    <li class="sidemenu">
-                        <p>
-                            <a id="menu3">メニュー3</a>
-                        </p>
-                        <ul id="childmenu3" class="childmenu">
-                            <li class="childmenu">子メニュー 3-1</li>
-                            <li class="childmenu">子メニュー 3-2</li>
-                        </ul>
-                    </li>
-                </ul> -->
+                <div style="display:flex;">
+                    <p>　　いいね：　</p>
+                    <p id="good">0</p>
+                </div>
+                <div style="display:flex;">
+                    <p>フォロワー：　</p>
+                    <p id="follower">0</p>
+                </div>
+                <div style="display:flex;">
+                    <p>イメージ数：　</p>
+                    <p id="imagenum">0</p>
+                </div>
+            </div>
+            <div style="text-align:center">
+                    <button id="logout">ログアウト</button>
             </div>
         </div>
-        <div style="display:flex">
-            <ul id="booklist" class="list">
-            </ul>
-            <ul id="bookmemo" class="memo">
-            </ul>
+        <div id="imglist">
+        </div>
+        <div id="add_img" style="display:none;margin-top:15px;width:100%;height:100%">
+            <div style="display:flex;height:100%">
+                <div id="img_drop_zone">
+                    <p id="img_drop_msg">ここにローカルファイルをドラッグしてください</p>
+                    <img id="img_drop" src="" alt="">
+                    <input id="img_url" name="img_url" type="text" placeholder="または画像URLを&#13;&#10;貼付してください">
+                </div>
+                <div style="width:50%;height:70%">
+                    <input id="img_name" type="text" style="width:100%;height:10%;margin-bottom:5px" placeholder="タイトルを入力してください"><br>
+                    <textarea id="abstract" name="abstract"></textarea><br>
+                    <input id="category" type="text" style="width:100%;height:10%;" placeholder="#を付けてキーワードを入力してください"><br>
+                    <button id="post" style="float:right;">投稿</button>
+                </div>
+            </div>
         </div>
     </div>
-    <button id="check">チェック</button>
-    <button id="check2">チャットボットなし</button>
+    <!-- <button id="check">チェック</button> -->
+    <div>
+        <!-- <textarea name="" id="test_text" cols="30" rows="10"></textarea> -->
+        <!-- <button id="test">送信</button> -->
+    </div>
 </body>
 
 </html>

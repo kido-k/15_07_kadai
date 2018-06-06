@@ -10,6 +10,11 @@ h2 {
     font-size: 18px;
 }
 
+h3 {
+    font-size: 14px;
+    font-weight: normal;
+}
+
 /*header*/
 
 #header {
@@ -26,12 +31,13 @@ h2 {
 
 h1 {
     position: absolute;
-    font-size: 20px;
+    font-size: 24px;
     line-height: 32px;
     font-weight: bold;
     padding: 0;
-    text-align: center;
+    /* text-align: center; */
     margin-top: 10px;
+    margin-left: 8%;
     width: 100%;
     color: #fff;
 }
@@ -74,29 +80,60 @@ h1 {
     position: absolute;
     background-color: rgb(255, 255, 255);
     font-size: 14px;
-    line-height: 32px;
     padding: 0;
+    height:26px;
     text-align: center;
-    margin-top: 15px;
-    margin-left: 8%;
-    width: 100px;
+    margin-top: 12px;
+    margin-left: 200px;
+    width: 150px;
 }
 
-#addmenu {
+#tool_bar {
     position: absolute;
-    margin-left: 250px;
-    z-index: 200;
+    margin-top: 5px;
+    margin-left: 400px;
+    width:40%;
+}
+
+#search {
+    height: 20px;
+    margin-top: 5px;
+    /* margin-left: 45%;*/
+    background: #F4F8FA;
+    border-color: #F4F8FA;
+    width:100%;
+    border-radius: 100px;
+}
+
+#add_button {
+    height: 35px;
+    font-size: 32px;
+    color: white;
+    margin: 0;
+    margin-left:30px;
+    margin-right:10px;
+    cursor: pointer;
+}
+
+#delete_button {
+    height: 35px;
+    font-size: 32px;
+    color: white;
+    margin: 0 10px;
+    cursor: pointer;
+}
+
+#home_button {
+    height: 35px;
 }
 
 #logout {
-    position: absolute;
-    display:none;
-    margin-top: 2px;
-    margin-left: 80%;
+    display: none;
+    margin-top: 30px;
     padding: 10px;
-    background-color: rgb(165, 193, 253);
-    border: 1px solid #fff;
-    color: rgb(0, 0, 0);
+    color: rgb(255, 255, 255);
+    background-color: #969696;
+    border: 1px solid #969696;
 }
 
 /*main*/
@@ -119,9 +156,9 @@ h1 {
     display: none;
 }
 
-#loginmenu{
+#loginmenu {
     position: relative;
-    background-color:#fff;
+    background-color: #fff;
     border-block-start: #bbb;
     width: 500px;
     height: 300px;
@@ -129,18 +166,18 @@ h1 {
     display: none;
 }
 
-#email{
+#email {
     margin-top: 20px;
-    font-size:18px;
+    font-size: 18px;
 }
 
-#pass{
-    margin-top: 20px;    
-    font-size:18px;
+#pass {
+    margin-top: 20px;
+    font-size: 18px;
 }
 
 #login {
-    margin-top:20px;
+    margin-top: 20px;
     width: 150px;
     padding: 10px;
     border-radius: 100px;
@@ -150,7 +187,7 @@ h1 {
 }
 
 #makeaccount {
-    margin-top:20px;
+    margin-top: 20px;
     width: 150px;
     padding: 10px;
     border-radius: 100px;
@@ -183,9 +220,8 @@ h1 {
     list-style-type: none;
 }
 
-#menu>ul {
-    margin: 0;
-    padding: 0;
+#menu {
+    margin-left: 30px;
 }
 
 li>p {
@@ -208,26 +244,10 @@ li>p {
     /* list-style-type: none!important; */
 }
 
-.childmenu {
-    margin-left: 15px;
-}
-
-#childmenu1 {
-    display: none;
-    margin: 0;
-    padding: 0;
-}
-
-#childmenu2 {
-    display: none;
-    margin: 0;
-    padding: 0;
-}
-
-#childmenu3 {
-    display: none;
-    margin: 0;
-    padding: 0;
+#accountname {
+    text-align: center;
+    font-weight: bold;
+    color: gray;
 }
 
 #drop_zone {
@@ -334,6 +354,49 @@ li>p {
     color: #fff;
 }
 
+#imglist {
+    height: 100%;
+    width: 100%;
+}
+
+#img_drop_zone {
+    /* position:relative; */
+    width: 200px;
+    height: 160px;
+    border: 2px dashed #bbb;
+    /* display: none; */
+    border-radius: 5px;
+    margin-left: 10px;
+    margin-right: 50px;
+    color: #bbb;
+}
+
+#img_drop_msg {
+    text-align: center;
+    font: 14pt bold;
+    color: #bbb;
+    /* display: none; */
+}
+
+#img_drop {
+    margin-top: 20px;
+    width: 150px;
+    height: 150px;
+    /* display: none; */
+    /* border: 2px dashed rgb(255, 93, 93); */
+}
+
+#img_url {
+    margin-top: 20px;
+    width: 200px;
+    height: 100px;
+}
+
+#abstract {
+    width: 100%;
+    height: 100%;
+}
+
 /* message area*/
 
 #bord_title {
@@ -399,27 +462,4 @@ li>p {
     background-color: #1da1f2;
     border: 1px solid #1da1f2;
     color: #fff;
-}
-
-/* map */
-
-#map {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-    /* z-index: -10; */
-}
-
-#output {
-    background-color: rgb(235, 255, 255);
-    margin-left: 30px;
-    border-style: double;
-    border-color: blue;
-    width: 400px;
-}
-
-footer {
-    background-color: #fff;
-    text-align: center;
 }

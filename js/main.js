@@ -3,17 +3,19 @@ var files;
 var iconfiles;
 
 var pre_userimage_url;
+var userimage_url;
 var pre_signbord_url;
 var userimage_url;
-var signbord_url;
-var signbordmsg;
+// var signbord_url;
+// var signbordmsg;
 
 var login = false;
+var config;
 
 $(function () {
 
     // Initialize Firebase
-    var config = {
+    config = {
         apiKey: "AIzaSyDybShiVah0D_qufhL3DlqqReyYrHY9Tpg",
         authDomain: "chatapp-e0a7e.firebaseapp.com",
         databaseURL: "https://chatapp-e0a7e.firebaseio.com",
@@ -23,8 +25,8 @@ $(function () {
     };
     firebase.initializeApp(config);
 
-    //MSG送受信準備
-    ref = firebase.database().ref();
+    // ログイン中かどうかの判定
+    const login_user_id = localStorage.getItem("login_user_id");
 
     //LocalStrageにloginidを保存
     // googleLogin(firebase).done(function (result) {   //deferredを入れてみたもののうまく動かず、、現状問題なし
@@ -32,41 +34,59 @@ $(function () {
     //     console.log(e);
     // });
 
-    //MSGデータ受信
-    // child_added:毎回１個//value:毎回すべてのデータを取得
+    // MSGデータ受信
+    // child_added:毎回１個
+    // value:毎回すべてのデータを取得
     // ref.on("child_added", function (data) {
     //     var val = data.val();
     // });
 
-    // userinfo = firebase.database().ref('/userinfo/' + user_id);
+    userinfo = firebase.database().ref('/userinfo/' + login_user_id);
 
     // userinfo.on("value", function (data) {
     //     receiveData(data);
     // });
 
-    const user_id = localStorage.getItem("user_id");
-    if (user_id != null) {
-        loadUserInfo(user_id);
-        loadBookFolder(user_id);
+    if (login_user_id != null) {
+        loadUserInfo(login_user_id);
+        loadAllImage(login_user_id);
+        // loadUserImage(user_id);
     }
+
     // Submit:MSG送信
-    $("#send").on("click", function () {
-        sendData();
+    $("#check").on("click", function () {
+        sendData(ref);
     });
 
+    $("#test").on("click", function () {
+        newsendData(login_user_id);
+    });
+
+    // //EnterKeyで送信する
+    // $("#imglist").on("keydown", function () {
+    //     sendData(ref);
+    // });
+
     //EnterKeyで送信する
-    $("#text").on("keydown", function () {
-        sendData();
+    $("#search").keyup(function (event) {
+        event = event || window.event;
+        if (event.keyCode == 13 || event.which == 13) {
+            const searchword = $("#search").val();
+            if (searchword != null) {
+                $("#imglist").empty();
+                loadSearchImage(searchword);
+            };
+        };
     });
 
     //メニューバーの表示・非表示の管理
     controlMenu();
 
     //ボタンアクションによる表示・非表示の管理
-    btnAction(user_id);
+    btnAction(login_user_id);
 
     //画像データのアップロード
-    // downloadImageData(firebase, user_id);
+    // downloadImageData(firebase, login_user_id);
 
     //変更画像の読み込み保存
     dragFile();
@@ -81,13 +101,13 @@ $(function () {
             dataType: "text",
             data: { 'email': $('#email').val(), 'password': $('#pass').val() },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
-                console.log("ajax通信に失敗しました");
+                // console.log("ajax通信に失敗しました");
             },
             success: function (res) {
-                console.log("ajax通信に成功しました");
-                console.log(res);
-                localStorage.setItem("user_id", res);
+                // console.log("ajax通信に成功しました");
+                localStorage.setItem("login_user_id", res);
                 loadUserInfo(res);
+                loadUserImage(login_user_id);
                 $("#loginmenu").css({ display: 'none' });
                 // $("#sidebar").css({ display: 'inline-block' });
                 $("#logout").css({ display: 'inline-block' });
@@ -101,24 +121,19 @@ $(function () {
 
     //ログアウト
     $("#logout").on("click", function () {
-        localStorage.removeItem("user_id");
+        localStorage.removeItem("login_user_id");
         location.reload();
         $("#loginmenu").css({ display: 'inline-block' });
         $("#sidebar").css({ display: 'none' });
         login = false;
     });
 
-    //チェックボタンによるアクション確認用
-    $("#check").on("click", function () {
-        loadBookFolder(user_id);
-    });
-
-    $("#check2").on("click", function () {
-        $("#dialogflow").css({ display: 'none' });
-        $("#bord_content").css({ display: 'iniine' });
-        $("#message").css({ display: 'iniine' });
-        $("#command").css({ display: 'iniine' });
-    });
+    // $("#check2").on("click", function () {
+    //     $("#dialogflow").css({ display: 'none' });
+    //     $("#bord_content").css({ display: 'iniine' });
+    //     $("#message").css({ display: 'iniine' });
+    //     $("#command").css({ display: 'iniine' });
+    // });
 });
 
 //データ受信処理
@@ -126,7 +141,7 @@ function receiveData(data) {
     if (data != null) {
         var data = data.val();
         $("#username").text(data.username);
-        console.log(data);
+        // console.log(data);
     } else {
         $("#username").text("999999")
     }
@@ -139,17 +154,48 @@ function receiveData(data) {
 };
 
 //データ送信処理
-function sendData() {
-    username = $("#username").val();
-    text = $("#message").val();
-    if (username != null && text != null && username != "" && text != "") {
-        signbordmsg.push({
-            username: username,
-            text: text,
+function sendData(ref) {
+    const account = $("#accountname").html();
+    const image = "テスト";
+    const msg = "メッセージ";
+    if (account != null && image != null && msg != null && account != "" && image != "" && msg != "") {
+        ref.push({
+            account: account,
+            image: image,
+            msg: msg
         });
     }
-    $("#message").val("");
+    // $("#message").val("");
 }
+
+function newsendData(login_user_id) {
+    const storageRef = firebase.storage().ref();
+    const userimage = storageRef.child("106727328335850617879userimage");
+    var userimage_url = "テスト";
+    // if (userimage != null) {
+    //     userimage.getDownloadURL().then(function (url) {
+    //         // $('#userimage').attr('src', url);
+    //         userimage_url = url;
+    //     }).catch(function (error) {
+    //         console.log(error);
+    //     });
+    // }
+
+    const img_chat = firebase.database().ref('/chat/' + login_user_id + '/' + 'imgdata0');
+    const account = $("#accountname").html();
+    const image = userimage_url;
+    const msg = $("#test_text").val();
+    if (account != null && image != null && msg != null && account != "" && image != "" && msg != "") {
+        img_chat.push({
+            account: account,
+            image: image,
+            msg: msg
+        });
+    }
+    // $("#message").val("");
+}
+
+
 
 function controlMenu() {
     var displayLoginBar = false;
@@ -158,21 +204,25 @@ function controlMenu() {
         if (login == false && displayLoginBar == true) {
             $("#loginmenu").css({ display: 'none' });
             $("#sidebar").css({ display: 'none' });
+            $("#imglist").css({ width: '100%' });
             displayLoginBar = false;
             displayMenuBar = false;
         } else if (login == false && displayLoginBar == false) {
             $("#loginmenu").css({ display: 'inline' });
             $("#sidebar").css({ display: 'none' });
+            $("#imglist").css({ width: '70%' });
             displayLoginBar = true;
             displayMenuBar = false;
         } else if (login == true && displayMenuBar == true) {
             $("#loginmenu").css({ display: 'none' });
             $("#sidebar").css({ display: 'none' });
+            $("#imglist").css({ width: '100%' });
             displayLoginBar = false;
             displayMenuBar = false;
         } else {
             $("#loginmenu").css({ display: 'none' });
             $("#sidebar").css({ display: 'inline' });
+            $("#imglist").css({ width: '70%' });
             displayLoginBar = false;
             displayMenuBar = true;
         }
@@ -212,12 +262,140 @@ function controlMenu() {
     });
 }
 
-function btnAction(user_id) {
-    //ログインボタン
-    // $("#login").on("click", function () {
-    //     $("#loginmenu").css({ display: 'none' });
-    //     $("#sidebar").css({ display: 'inline-block' });
-    // });
+function btnAction(login_user_id) {
+    var delmode = false;
+
+    //addボタン
+    $("#add_button").on("click", function () {
+        $("#imglist").css({ display: 'none' });
+        $("#add_img").css({ display: 'inline-block' });
+    });
+
+    $("#delete_button").on("click", function () {
+        if (delmode == true) {
+            $("#imglist").css({ background: '#fff', opacity: '0.5' });
+            $(".del").css({ display: 'none' });
+            delmode = false;
+        } else {
+            $("#imglist").css({ background: 'rgb(168, 168, 169)', opacity: '0.5' });
+            $(".del").css({ display: 'inline' });
+            delmode = true;
+        }
+    });
+
+    $(document).on("click", ".follow", function () {
+        const id = $(this).attr("id");
+        if ($("#" + id).html() == 'Follow NOW') {
+            $("#" + id).html("Follow ME");
+            $("#" + id).css({ background: '#FFF', color: '#1da1f2' });
+
+            const uid = id.replace('follow', 'user');
+            const follow_user_id = $("#" + uid).html();
+
+            $.ajax({
+                url: "delete_follower.php",
+                type: "POST",
+                dataType: "text",
+                data: { "user_id": login_user_id, "follow_user_id": follow_user_id },
+                scriptCharset: 'utf-8',
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    console.log("ajax通信に失敗しました");
+                },
+                success: function (res) {
+                    console.log("ajax通信に成功しました");
+                }
+            });
+        } else {
+            $("#" + id).html("Follow NOW");
+            $("#" + id).css({ background: '#1da1f2', color: '#FFF' });
+
+            const uid = id.replace('follow', 'user');
+            const follow_user_id = $("#" + uid).html();
+
+            $.ajax({
+                url: "insert_follower.php",
+                type: "POST",
+                dataType: "text",
+                data: { "user_id": login_user_id, "follow_user_id": follow_user_id },
+                scriptCharset: 'utf-8',
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    console.log("ajax通信に失敗しました");
+                },
+                success: function (res) {
+                    console.log("ajax通信に成功しました");
+                }
+            });
+        }
+    });
+
+    $(document).on("click", ".good", function () {
+        const id = $(this).attr("id");
+        src = $("#" + id).attr('src');
+
+        const imgid = id.replace('good', '');
+
+        if (src == 'img/heart_red.png') {
+            $("#" + id).attr('src', 'img/heart_blank.png');
+            $.ajax({
+                url: "delete_good.php",
+                type: "POST",
+                dataType: "text",
+                data: { "user_id": login_user_id, "img_id": imgid },
+                scriptCharset: 'utf-8',
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    console.log("ajax通信に失敗しました");
+                },
+                success: function (res) {
+                    console.log("ajax通信に成功しました");
+                }
+            });
+        } else {
+            $("#" + id).attr('src', 'img/heart_red.png');
+
+            $.ajax({
+                url: "insert_good.php",
+                type: "POST",
+                dataType: "text",
+                data: { "user_id": login_user_id, "img_id": imgid },
+                scriptCharset: 'utf-8',
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    console.log("ajax通信に失敗しました");
+                },
+                success: function (res) {
+                    console.log("ajax通信に成功しました");
+                }
+            });
+        }
+    });
+
+    $(document).on("click", ".del", function () {
+        const id = $(this).attr("id");
+        src = $("#" + id).attr('src');
+
+        const imgid = id.replace('del_', '');
+
+        $.ajax({
+            url: "delete_imginfo.php",
+            type: "POST",
+            dataType: "text",
+            data: { "img_id": imgid },
+            scriptCharset: 'utf-8',
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                console.log("ajax通信に失敗しました");
+            },
+            success: function (res) {
+                console.log("ajax通信に成功しました");
+            }
+        });
+    });
+
+
+
+    //homeボタン
+    $("#home_button").on("click", function () {
+        $("#imglist").css({ display: 'inline-block' });
+        $("#add_img").css({ display: 'none' });
+    });
 
     //ユーザーイメージ画像の変更ボタン
     $("#uimage_change").on("click", function () {
@@ -262,22 +440,29 @@ function btnAction(user_id) {
 
     $("#mode").on("change", function () {
         if ($("#mode").val() == 0) {
-            $("#location").css({ display: 'none' });
-            $("#content").css({ display: 'none' });
+            $("#imglist").empty();
+            loadAllImage();
+            $("#add_button").css({ display: 'none' });
+            $("#delete_button").css({ display: 'none' });
         } else if ($("#mode").val() == 1) {
-            $("#location").css({ display: 'inline' });
-            $("#content").css({ display: 'inline' });
+            $("#imglist").empty();
+            loadUserImage(login_user_id);
+            $("#add_button").css({ display: 'inline' });
+            $("#delete_button").css({ display: 'inline' });
         } else if ($("#mode").val() == 2) {
-            $("#location").css({ display: 'none' });
-            $("#content").css({ display: 'none' });
+            // $("#location").css({ display: 'none' });
+            // $("#content").css({ display: 'none' });
         }
     });
 
+    $("#post").on("click", function () {
+        addImageData(login_user_id);
+    })
 }
 
-// function downloadImageData(firebase, user_id) {
+// function downloadImageData(firebase, login_user_id) {
 //     var storageRef = firebase.storage().ref();
-//     const userimage = storageRef.child(user_id + "userimage");
+//     const userimage = storageRef.child(login_user_id + "userimage");
 //     if (userimage != null) {
 //         userimage.getDownloadURL().then(function (url) {
 //             $('#userimage').attr('src', url);
@@ -286,31 +471,20 @@ function btnAction(user_id) {
 //             console.log(error);
 //         });
 //     }
-//     const signbordimage = storageRef.child(user_id + "iconimage");
-//     if (signbordimage != null) {
-//         signbordimage.getDownloadURL().then(function (url) {
-//             $('#icon_image').attr('src', url);
-//             $('#icon_image').css({ display: 'inline-block' });
-//             $('#icon_msg').css({ display: 'none' });
-//             signbord_url = url;
-//         }).catch(function (error) {
-//             console.log(error);
-//         });
-//     }
 // }
 
-// function uploadImageData(firebase, user_id, position) {
+// function uploadImageData(firebase, login_user_id, position) {
 //     // var mountainImagesRef = storageRef.child("imgs/monkey.png");
 //     if (files != null && position == "uimage") {
 //         const dragfile = files[0];
-//         const storageRef = firebase.storage().ref(user_id + "userimage");
+//         const storageRef = firebase.storage().ref(login_user_id + "userimage");
 //         storageRef.put(dragfile).then(function (snapshot) {
 //             alert("保存しました");
 //         });
 //         userimage_url = pre_userimage_url;
 //     } else if (iconfiles != null && position == "iconimage") {
 //         const iconfile = iconfiles[0];
-//         const storageRef = firebase.storage().ref(user_id + "iconimage");
+//         const storageRef = firebase.storage().ref(login_user_id + "iconimage");
 //         storageRef.put(iconfile).then(function (snapshot) {
 //             alert("保存しました");
 //         });
@@ -432,22 +606,23 @@ function controlMassege(id) {
     });
 };
 
-function loadUserInfo(user_id) {
-    // const user_id = localStorage.getItem("user_id");
-    // const user_id = "2";
+//☆JSONでのやり取りに書き換える
+function loadUserInfo(login_user_id) {
+    // const login_user_id = localStorage.getItem("login_user_id");
+    // const login_user_id = "2";
     $.ajax({
         url: "select_userinfo.php",
         type: "POST",
         dataType: "text",
-        data: { 'user_id': user_id },
+        data: { 'user_id': login_user_id },
         error: function (XMLHttpRequest, textStatus, errorThrown) {
-            console.log("ajax通信に失敗しました");
+            // console.log("ajax通信に失敗しました");
         },
         success: function (res) {
-            console.log("ajax通信に成功しました");
+            // console.log("ajax通信に成功しました");
             const result = JSON.parse(res);
-            $("#accountname").html(result.account);
-            // localStorage.setItem("user_id",res);
+            $("#accountname").html(result[0].account);
+            // localStorage.setItem("login_user_id",res);
             $("#loginmenu").css({ display: 'none' });
             // $("#sidebar").css({ display: 'inline-block' });
             $("#logout").css({ display: 'inline-block' });
@@ -455,6 +630,158 @@ function loadUserInfo(user_id) {
         }
     });
 };
+
+function loadAllImage(login_user_id) {
+    var result = "";
+    $.ajax({
+        url: "select_allimginfo.php",
+        type: "POST",
+        dataType: "text",
+        error: function (XMLHttpRequest, textStatus, errorThrown) {
+            // console.log("ajax通信に失敗しました");
+        },
+        success: function (res) {
+            // console.log("ajax通信に成功しました");
+            // console.log(res);
+            result = JSON.parse(res);
+            // console.log(result[0]);
+            var img_id = "";
+            for (i = 0; i < result.length; i++) {
+                img_id = result[i].img_id;
+                $("#imglist").append('<div style="display:flex;"><h2 id="' + 'img_name' + img_id + '" style="height:30px;width:75%;margin:0;margin-left:20px;margin-top: 20px;">' + result[i].img_name + '</h2>'
+                    + '<h2 id="' + 'sysdate' + img_id + '" style="height:30px;width:20%;margin:0;text-align:right;margin-top: 20px;">' + result[i].sysdate + '</h2></div>');
+                $("#imglist").append('<div style="display:flex;"><h3 id="' + 'account' + img_id + '" style="margin:0;margin-left:20px;">' + 'by ' + result[i].account + '</h3>'
+                    + '<p id="' + 'follow' + img_id + '" class="follow" style="font-size:12px;margin:0;margin-left:50px;cursor:pointer;border-radius:50px;background-color:#FFF;border:1px solid #1da1f2;color:#1da1f2;width:90px; text-align:center">FOLLOW ME</p>'
+                    + '<p style="font-size:12px;margin:0;margin-left:50px">いいね</p><img id="' + 'good' + img_id + '"src="img/heart_blank.png" class="good" style="height:15px;width:15px;margin:0;margin-left:10px;cursor:pointer;"></div>');
+                $("#imglist").append('<div id="' + 'img' + img_id + '" style="display:flex; height:220px;"></div>');
+                $("#" + 'img' + img_id).append('<div class="del" style="display:none;width:5%;"><p id="del_' + result[i].img_id + '" class="del_btn" style="cursor: pointer;font-size:30px;text-align:center;">☒</p></div>');
+                $("#" + 'img' + img_id).append('<div style="width:15%;"><img id=imgdata"' + img_id + '" src="' + result[i].img_data + '" style="margin:10px 10px;object-fit:contain;max-width:90%;max-height:220px;"></div>');
+                $("#" + 'img' + img_id).append('<textarea id="' + 'abstract' + img_id + '" style="height:175px; margin:10px 10px; width:45%; readonly:true;">' + result[i].abstract + '</textarea>');
+                $("#" + 'img' + img_id).append('<div id=msg"' + img_id + '" style="height:175px; margin:10px 10px; width:35%;">' + '</div>');
+                $("#" + 'img' + img_id).append('<div style="display:none"><p id="user' + img_id + '">' + result[i].user_id + '</p></div>');
+                loadMsg(login_user_id, img_id, i);
+            };
+        }
+    });
+};
+
+function loadUserImage(login_user_id) {
+    var result = "";
+    $.ajax({
+        url: "select_userimginfo.php",
+        type: "POST",
+        dataType: "text",
+        data: { 'user_id': login_user_id },
+        error: function (XMLHttpRequest, textStatus, errorThrown) {
+            // console.log("ajax通信に失敗しました");
+        },
+        success: function (res) {
+            // console.log("ajax通信に成功しました");
+            // console.log(res);
+            result = JSON.parse(res);
+            // console.log(result[0]);
+            var img_id = "";
+            for (i = 0; i < result.length; i++) {
+                img_id = result[i].img_id;
+                $("#imglist").append('<div style="display:flex;"><h2 id="' + 'img_name' + img_id + '" style="height:30px;width:75%;margin:0;margin-left:20px;margin-top: 20px;">' + result[i].img_name + '</h2>'
+                    + '<h2 id="' + 'sysdate' + img_id + '" style="height:30px;width:20%;margin:0;text-align:right;margin-top: 20px;">' + result[i].sysdate + '</h2></div>');
+                $("#imglist").append('<div style="display:flex;"><h3 id="' + 'account' + img_id + '" style="margin:0;margin-left:20px;">' + 'by ' + result[i].account + '</h3>');
+                $("#imglist").append('<div id="' + 'img' + img_id + '" style="display:flex; height:220px;"></div>');
+                $("#" + 'img' + img_id).append('<div class="del" style="display:none;width:5%;"><p id="del_' + result[i].img_id + '" class="del_btn" style="cursor: pointer;font-size:30px;text-align:center;">☒</p></div>');
+                $("#" + 'img' + img_id).append('<div style="width:15%;"><img id=imgdata"' + img_id + '" src="' + result[i].img_data + '" style="margin:10px 10px;object-fit:contain;max-width:90%;max-height:220px;"></div>');
+                $("#" + 'img' + img_id).append('<textarea id="' + 'abstract' + img_id + '" style="height:175px; margin:10px 10px; width:45%; readonly:true;">' + result[i].abstract + '</textarea>');
+                $("#" + 'img' + img_id).append('<div id=msg"' + img_id + '" style="height:175px; margin:10px 10px; width:35%;">' + '</div>');
+                // loadMsg(login_user_id, img_id, i);
+            };
+        }
+    });
+    // $('.del_btn').on('click', function () {
+    //     const id = $(this).attr("id");
+    //     alert(id);
+    // });
+};
+
+function loadSearchImage(searchword) {
+    var result = "";
+    $.ajax({
+        url: "select_searchimginfo.php",
+        type: "POST",
+        dataType: "text",
+        data: { 'searchword': searchword },
+        error: function (XMLHttpRequest, textStatus, errorThrown) {
+            // console.log("ajax通信に失敗しました");
+        },
+        success: function (res) {
+            // console.log("ajax通信に成功しました");
+            // console.log(res);
+            result = JSON.parse(res);
+            // console.log(result[0]);
+            var img_id = "";
+            for (i = 0; i < result.length; i++) {
+                img_id = result[i].img_id;
+                $("#imglist").append('<div style="display:flex;"><h2 id="' + 'img_name' + img_id + '" style="height:30px;width:75%;margin:0;margin-left:20px;margin-top: 20px;">' + result[i].img_name + '</h2>'
+                    + '<h2 id="' + 'sysdate' + img_id + '" style="height:30px;width:20%;margin:0;text-align:right;margin-top: 20px;">' + result[i].sysdate + '</h2></div>');
+                $("#imglist").append('<div style="display:flex;"><h3 id="' + 'account' + img_id + '" style="margin:0;margin-left:20px;">' + 'by ' + result[i].account + '</h3>'
+                    + '<p id="' + 'follow' + img_id + '" class="follow" style="font-size:12px;margin:0;margin-left:50px;cursor:pointer;border-radius:50px;background-color:#FFF;border:1px solid #1da1f2;color:#1da1f2;width:90px; text-align:center">FOLLOW ME</p>'
+                    + '<p style="font-size:12px;margin:0;margin-left:50px">いいね</p><img id="' + 'good' + img_id + '"src="img/heart_blank.png" class="good" style="height:15px;width:15px;margin:0;margin-left:10px;cursor:pointer;"></div>');
+                $("#imglist").append('<div id="' + 'img' + img_id + '" style="display:flex; height:220px;"></div>');
+                $("#" + 'img' + img_id).append('<div class="del" style="display:none;width:5%;"><p id="del_' + result[i].img_id + '" class="del_btn" style="cursor: pointer;font-size:30px;text-align:center;">☒</p></div>');
+                $("#" + 'img' + img_id).append('<div style="width:15%;"><img id=imgdata"' + img_id + '" src="' + result[i].img_data + '" style="margin:10px 10px;object-fit:contain;max-width:90%;max-height:220px;"></div>');
+                $("#" + 'img' + img_id).append('<textarea id="' + 'abstract' + img_id + '" style="height:175px; margin:10px 10px; width:45%; readonly:true;">' + result[i].abstract + '</textarea>');
+                $("#" + 'img' + img_id).append('<div id=msg"' + img_id + '" style="height:175px; margin:10px 10px; width:35%;">' + '</div>');
+                $("#" + 'img' + img_id).append('<div style="display:none"><p id="user' + img_id + '">' + result[i].user_id + '</p></div>');
+                // loadMsg(login_user_id, img_id, i);
+            };
+        }
+    });
+};
+
+function loadMsg(login_user_id, img_id, i) {
+    var storageRef = firebase.storage().ref();
+    const userimage = storageRef.child("106727328335850617879userimage");
+    if (userimage != null) {
+        userimage.getDownloadURL().then(function (url) {
+            userimage_url = url;
+        }).catch(function (error) {
+            console.log(error);
+        });
+    }
+    const img_chat = firebase.database().ref('/chat/' + login_user_id + '/' + img_id);
+    img_chat.on("child_added", function (data) {
+        const param = data.val();
+        $("#" + 'msg' + i).append('<div style="display:flex; overflow: auto;"><img style="margin: 0; height:20px; widht:20px;" src="' + userimage_url + '>' + '<p style="margin: 0; font-size:14px;">' + param.account + '</p></div>');
+        // $("#" + 'msg' + i).append('<div style="display:flex;"><img style="margin: 0;" src="' + param.image + '" style="height:50px; widht:50px;">');
+        // $("#" + 'msg' + i).append('<p style="margin: 0; font-size:10px;">' + param.account + '</p></div>');
+        $("#" + 'msg' + i).append('<p style="margin: 0; background-color: #bfe3f5;">' + param.msg + '</p>');
+    });
+};
+
+//☆JSONでのやり取りに書き換える
+function addImageData(login_user_id) {
+    const img_name = $("#img_name").val();
+    const img_data = $("#img_url").val();
+    const category = $("#category").val();
+    const abstract = $("#abstract").val();
+
+    var data = { "img_name": img_name, "img_data": img_data, "user_id": user_id, "category": category, "abstract": abstract };
+
+    // var jsondata = JSON.stringify(data);
+
+    $.ajax({
+        url: "insert_imginfo.php",
+        type: "POST",
+        dataType: "text",
+        data: { "img_name": img_name, "img_data": img_data, "user_id": user_id, "category": category, "abstract": abstract },
+        scriptCharset: 'utf-8',
+        error: function (XMLHttpRequest, textStatus, errorThrown) {
+            console.log("ajax通信に失敗しました");
+        },
+        success: function (res) {
+            console.log("ajax通信に成功しました");
+        }
+    });
+};
+
 
 function createXmlHttpRequest() {
     var xmlhttp = null;
@@ -472,65 +799,3 @@ function createXmlHttpRequest() {
     }
     return xmlhttp;
 };
-
-function loadBookFolder(user_id) {
-    // loadLocaStrage();
-    // clearLocalStrage();
-    // clearBookList();
-    var result = "";
-    $.ajax({
-        url: "select_imginfo.php",
-        type: "POST",
-        dataType: "text",
-        data: { 'user_id': user_id },
-        error: function (XMLHttpRequest, textStatus, errorThrown) {
-            console.log("ajax通信に失敗しました");
-        },
-        success: function (res) {
-            console.log("ajax通信に成功しました");
-            result = JSON.parse(res);
-            // console.log(result[0]);
-            for (i = 0; i < result.length; i++) {
-                $('#booklist').append('<li style="list-style:none;"><img id= ' + "img" + i + ' src="' + result[i].img_data + '" style="height:180px;">' + '</li>');
-                $('#bookmemo').append('<li style="list-style:none;"><textarea id=' + "abstract" + i + ' style="height:180px;"> ' + result[i].abstract + '</textarea>');
-            }
-        }
-    });
-
-    // for (i = 0; i < files.length; i++) {
-    //     if (filenames.indexOf(booknames[i]) >= 0) {
-    //         // break;
-    //     } else if (filenames.indexOf(booknames[i]) == -1) {
-    //         bookbox.splice(i, 1);
-    //         i -= i;
-    //     }
-    // }
-    // makeBookList(bookbox);
-};
-
-// function makeBookList(bookbox) {
-//     $("#booklist").empty();
-//     $("#bookmemo").empty();
-//     for (i = 0; i < bookbox.length; i++) {
-//         var str_img = img + bookbox[i].id;
-//         var str_memo = memo + bookbox[i].id;
-//         output = bookbox[i].path;
-//         memoval = bookbox[i].memo;
-//         if (i == 0) {
-//             $('#booklist').append('<li><img id=' + str_img + ' src="' + output + '"alt="" class="image" onClick="clickImage(this)"></li>');
-//             $('#bookmemo').append('<li><textarea id=' + str_memo + ' cols="30" rows="10" class="select text">' + memoval + '</textarea>');
-//         }
-//         else {
-//             $('#booklist').append('<li><img id=' + str_img + ' src="' + output + '"alt="" class="image" onClick="clickImage(this)"></li>');
-//             $('#bookmemo').append('<li><textarea id=' + str_memo + ' cols="30" rows="10" class="hide text">' + memoval + '</textarea>');
-//         }
-//     }
-// };
-
-// function clearBookList() {
-//     bookbox = [];
-//     bookid = [];
-//     booknames = [];
-//     bookpaths = [];
-//     bookmemos = [];
-// }
