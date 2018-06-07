@@ -1,0 +1,40 @@
+<?php
+//1.  DB接続します
+try {
+  $pdo = new PDO('mysql:dbname=gs_db;charset=utf8;host=localhost','root','');
+} catch (PDOException $e) {
+  exit('DbConnectError:'.$e->getMessage());
+}
+
+include 'ChromePhp.php';
+
+$user_id=$_POST["user_id"];
+
+//２．データ登録SQL作成
+$sql = "SELECT count(img_id) AS num FROM img_info WHERE user_id = :a1";
+$stmt = $pdo->prepare($sql);
+$stmt->bindValue(':a1', $user_id, PDO::PARAM_STR);
+$status = $stmt->execute();
+
+//３．データ表示
+$view="";
+if($status==false) {
+    //execute（SQL実行時にエラーがある場合）
+  $error = $stmt->errorInfo();
+  // ChromePhp::log("false");
+  exit("ErrorQuery:".$error[2]);
+}else{
+  // ChromePhp::log("true");
+  //Selectデータの数だけ自動でループしてくれる
+  //FETCH_ASSOC=http://php.net/manual/ja/pdostatement.fetch.php
+  $data = array();
+  while($result = $stmt->fetch(PDO::FETCH_ASSOC)){
+   $data[]=array(
+          'num' => $result['num'],
+   );
+  }
+  // ChromePhp::log($imgData);
+  $jsonTest=json_encode($data,JSON_UNESCAPED_UNICODE);
+  echo $jsonTest;
+}
+?>

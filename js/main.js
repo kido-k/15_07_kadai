@@ -48,10 +48,11 @@ $(function () {
     // });
 
     if (login_user_id != null) {
-        loadUserInfo(login_user_id);
-        loadAllImage(login_user_id);
-        // loadUserImage(user_id);
-    }
+        loadUserData(login_user_id);
+    } else {
+        $("#imglist").empty();
+        loadAllImage();
+    };
 
     // Submit:MSG送信
     $("#check").on("click", function () {
@@ -106,11 +107,10 @@ $(function () {
             success: function (res) {
                 // console.log("ajax通信に成功しました");
                 localStorage.setItem("login_user_id", res);
-                loadUserInfo(res);
-                loadUserImage(login_user_id);
                 $("#loginmenu").css({ display: 'none' });
                 // $("#sidebar").css({ display: 'inline-block' });
                 $("#logout").css({ display: 'inline-block' });
+                loadUserData(res);
             }
         });
     });
@@ -319,10 +319,10 @@ function btnAction(login_user_id) {
                 data: { "user_id": login_user_id, "follow_user_id": follow_user_id },
                 scriptCharset: 'utf-8',
                 error: function (XMLHttpRequest, textStatus, errorThrown) {
-                    console.log("ajax通信に失敗しました");
+                    // console.log("ajax通信に失敗しました");
                 },
                 success: function (res) {
-                    console.log("ajax通信に成功しました");
+                    // console.log("ajax通信に成功しました");
                 }
             });
         }
@@ -343,15 +343,14 @@ function btnAction(login_user_id) {
                 data: { "user_id": login_user_id, "img_id": imgid },
                 scriptCharset: 'utf-8',
                 error: function (XMLHttpRequest, textStatus, errorThrown) {
-                    console.log("ajax通信に失敗しました");
+                    // console.log("ajax通信に失敗しました");
                 },
                 success: function (res) {
-                    console.log("ajax通信に成功しました");
+                    // console.log("ajax通信に成功しました");
                 }
             });
         } else {
             $("#" + id).attr('src', 'img/heart_red.png');
-
             $.ajax({
                 url: "insert_good.php",
                 type: "POST",
@@ -359,10 +358,10 @@ function btnAction(login_user_id) {
                 data: { "user_id": login_user_id, "img_id": imgid },
                 scriptCharset: 'utf-8',
                 error: function (XMLHttpRequest, textStatus, errorThrown) {
-                    console.log("ajax通信に失敗しました");
+                    // console.log("ajax通信に失敗しました");
                 },
                 success: function (res) {
-                    console.log("ajax通信に成功しました");
+                    // console.log("ajax通信に成功しました");
                 }
             });
         }
@@ -381,10 +380,10 @@ function btnAction(login_user_id) {
             data: { "img_id": imgid },
             scriptCharset: 'utf-8',
             error: function (XMLHttpRequest, textStatus, errorThrown) {
-                console.log("ajax通信に失敗しました");
+                // console.log("ajax通信に失敗しました");
             },
             success: function (res) {
-                console.log("ajax通信に成功しました");
+                // console.log("ajax通信に成功しました");
             }
         });
     });
@@ -631,7 +630,64 @@ function loadUserInfo(login_user_id) {
     });
 };
 
-function loadAllImage(login_user_id) {
+function loadUserImageCount(login_user_id) {
+    // const login_user_id = localStorage.getItem("login_user_id");
+    // const login_user_id = "2";
+    $.ajax({
+        url: "select_userimgcount.php",
+        type: "POST",
+        dataType: "text",
+        data: { 'user_id': login_user_id },
+        error: function (XMLHttpRequest, textStatus, errorThrown) {
+            // console.log("ajax通信に失敗しました");
+        },
+        success: function (res) {
+            // console.log("ajax通信に成功しました");
+            const result = JSON.parse(res);
+            $("#imagenum").html(result[0].num);
+        }
+    });
+};
+
+function loadUserGoodCount(login_user_id) {
+    // const login_user_id = localStorage.getItem("login_user_id");
+    // const login_user_id = "2";
+    $.ajax({
+        url: "select_usergoodcount.php",
+        type: "POST",
+        dataType: "text",
+        data: { 'user_id': login_user_id },
+        error: function (XMLHttpRequest, textStatus, errorThrown) {
+            // console.log("ajax通信に失敗しました");
+        },
+        success: function (res) {
+            // console.log("ajax通信に成功しました");
+            const result = JSON.parse(res);
+            $("#good").html(result[0].num);
+        }
+    });
+};
+
+function loadUserFollowCount(login_user_id) {
+    // const login_user_id = localStorage.getItem("login_user_id");
+    // const login_user_id = "2";
+    $.ajax({
+        url: "select_userfollowcount.php",
+        type: "POST",
+        dataType: "text",
+        data: { 'user_id': login_user_id },
+        error: function (XMLHttpRequest, textStatus, errorThrown) {
+            // console.log("ajax通信に失敗しました");
+        },
+        success: function (res) {
+            // console.log("ajax通信に成功しました");
+            const result = JSON.parse(res);
+            $("#follower").html(result[0].num);
+        }
+    });
+};
+
+function loadAllImage() {
     var result = "";
     $.ajax({
         url: "select_allimginfo.php",
@@ -653,13 +709,13 @@ function loadAllImage(login_user_id) {
                 $("#imglist").append('<div style="display:flex;"><h3 id="' + 'account' + img_id + '" style="margin:0;margin-left:20px;">' + 'by ' + result[i].account + '</h3>'
                     + '<p id="' + 'follow' + img_id + '" class="follow" style="font-size:12px;margin:0;margin-left:50px;cursor:pointer;border-radius:50px;background-color:#FFF;border:1px solid #1da1f2;color:#1da1f2;width:90px; text-align:center">FOLLOW ME</p>'
                     + '<p style="font-size:12px;margin:0;margin-left:50px">いいね</p><img id="' + 'good' + img_id + '"src="img/heart_blank.png" class="good" style="height:15px;width:15px;margin:0;margin-left:10px;cursor:pointer;"></div>');
-                $("#imglist").append('<div id="' + 'img' + img_id + '" style="display:flex; height:220px;"></div>');
+                $("#imglist").append('<div id="' + 'img' + img_id + '" style="display:flex; height:220px;margin-left:15px;"></div>');
                 $("#" + 'img' + img_id).append('<div class="del" style="display:none;width:5%;"><p id="del_' + result[i].img_id + '" class="del_btn" style="cursor: pointer;font-size:30px;text-align:center;">☒</p></div>');
-                $("#" + 'img' + img_id).append('<div style="width:15%;"><img id=imgdata"' + img_id + '" src="' + result[i].img_data + '" style="margin:10px 10px;object-fit:contain;max-width:90%;max-height:220px;"></div>');
-                $("#" + 'img' + img_id).append('<textarea id="' + 'abstract' + img_id + '" style="height:175px; margin:10px 10px; width:45%; readonly:true;">' + result[i].abstract + '</textarea>');
+                $("#" + 'img' + img_id).append('<div style="width:15%;"><img id=imgdata"' + img_id + '" src="' + result[i].img_data + '" style="margin:10px 10px;object-fit:contain;max-width:90%;max-height:200px;"></div>');
+                $("#" + 'img' + img_id).append('<text id="' + 'abstract' + img_id + '" style="height:195px; margin:10px 10px; width:45%;border-style:solid;border-width:0.5px;padding:5px;overflow: auto;" readonly>' + result[i].abstract + '</text>');
                 $("#" + 'img' + img_id).append('<div id=msg"' + img_id + '" style="height:175px; margin:10px 10px; width:35%;">' + '</div>');
                 $("#" + 'img' + img_id).append('<div style="display:none"><p id="user' + img_id + '">' + result[i].user_id + '</p></div>');
-                loadMsg(login_user_id, img_id, i);
+                // loadMsg(login_user_id, img_id, i);
             };
         }
     });
@@ -689,7 +745,7 @@ function loadUserImage(login_user_id) {
                 $("#imglist").append('<div id="' + 'img' + img_id + '" style="display:flex; height:220px;"></div>');
                 $("#" + 'img' + img_id).append('<div class="del" style="display:none;width:5%;"><p id="del_' + result[i].img_id + '" class="del_btn" style="cursor: pointer;font-size:30px;text-align:center;">☒</p></div>');
                 $("#" + 'img' + img_id).append('<div style="width:15%;"><img id=imgdata"' + img_id + '" src="' + result[i].img_data + '" style="margin:10px 10px;object-fit:contain;max-width:90%;max-height:220px;"></div>');
-                $("#" + 'img' + img_id).append('<textarea id="' + 'abstract' + img_id + '" style="height:175px; margin:10px 10px; width:45%; readonly:true;">' + result[i].abstract + '</textarea>');
+                $("#" + 'img' + img_id).append('<text id="' + 'abstract' + img_id + '" style="height:195px; margin:10px 10px; width:45%;border-style:solid;border-width:0.5px;padding:5px;overflow: auto;" readonly>' + result[i].abstract + '</text>');
                 $("#" + 'img' + img_id).append('<div id=msg"' + img_id + '" style="height:175px; margin:10px 10px; width:35%;">' + '</div>');
                 // loadMsg(login_user_id, img_id, i);
             };
@@ -727,7 +783,7 @@ function loadSearchImage(searchword) {
                 $("#imglist").append('<div id="' + 'img' + img_id + '" style="display:flex; height:220px;"></div>');
                 $("#" + 'img' + img_id).append('<div class="del" style="display:none;width:5%;"><p id="del_' + result[i].img_id + '" class="del_btn" style="cursor: pointer;font-size:30px;text-align:center;">☒</p></div>');
                 $("#" + 'img' + img_id).append('<div style="width:15%;"><img id=imgdata"' + img_id + '" src="' + result[i].img_data + '" style="margin:10px 10px;object-fit:contain;max-width:90%;max-height:220px;"></div>');
-                $("#" + 'img' + img_id).append('<textarea id="' + 'abstract' + img_id + '" style="height:175px; margin:10px 10px; width:45%; readonly:true;">' + result[i].abstract + '</textarea>');
+                $("#" + 'img' + img_id).append('<text id="' + 'abstract' + img_id + '" style="height:195px; margin:10px 10px; width:45%;border-style:solid;border-width:0.5px;padding:5px;overflow: auto;" readonly>' + result[i].abstract + '</text>');
                 $("#" + 'img' + img_id).append('<div id=msg"' + img_id + '" style="height:175px; margin:10px 10px; width:35%;">' + '</div>');
                 $("#" + 'img' + img_id).append('<div style="display:none"><p id="user' + img_id + '">' + result[i].user_id + '</p></div>');
                 // loadMsg(login_user_id, img_id, i);
@@ -781,6 +837,16 @@ function addImageData(login_user_id) {
         }
     });
 };
+
+function loadUserData(login_user_id) {
+    $("#imglist").empty();
+    loadUserInfo(login_user_id);
+    loadUserImageCount(login_user_id);
+    loadAllImage(login_user_id);
+    loadUserGoodCount(login_user_id);
+    loadUserFollowCount(login_user_id);
+    // loadUserImage(user_id);
+}
 
 
 function createXmlHttpRequest() {

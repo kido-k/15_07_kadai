@@ -29,15 +29,15 @@ h3 {
     z-index: 100;
 }
 
-h1 {
+#title {
     position: absolute;
     font-size: 24px;
     line-height: 32px;
     font-weight: bold;
     padding: 0;
     /* text-align: center; */
-    margin-top: 10px;
-    margin-left: 8%;
+    margin-top: 7px;
+    margin-left: 50px;
     width: 100%;
     color: #fff;
 }
@@ -192,7 +192,7 @@ h1 {
     padding: 10px;
     border-radius: 100px;
     background-color: #f2af1d;
-    border: 1px solid #1da1f2;
+    border: 1px solid #ffd95e;
     color: #fff;
 }
 

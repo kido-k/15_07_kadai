@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Image投稿アプリ</title>
+    <title>POST</title>
     <link rel="stylesheet" href="css\sanitize.css">
     <link rel="stylesheet" href="css\entry.css">
     <script src="js/jquery-2.1.3.min.js"></script>
@@ -14,7 +14,9 @@
 <body>
     <div id="header">
         <!-- <img id="icon" src="imgs/SignBoard.jpg" alt=""> -->
-        <h1 id="title">Image投稿アプリ</h1>
+        <h1 id="title">
+            <a href="main.php" style="cursor: pointer;text-decoration:none;color:white;">Image投稿アプリ POST</a>
+        </h1>
     </div>
     <form method="post" action="insert_userinfo.php">
         <div id="main">
