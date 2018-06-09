@@ -456,8 +456,9 @@ function btnAction(login_user_id) {
 
     $("#post").on("click", function () {
         addImageData(login_user_id);
-    })
-}
+        window.location.href = "main.php";
+    });
+};
 
 // function downloadImageData(firebase, login_user_id) {
 //     var storageRef = firebase.storage().ref();
@@ -819,7 +820,7 @@ function addImageData(login_user_id) {
     const category = $("#category").val();
     const abstract = $("#abstract").val();
 
-    var data = { "img_name": img_name, "img_data": img_data, "user_id": user_id, "category": category, "abstract": abstract };
+    var data = { "img_name": img_name, "img_data": img_data, "user_id": login_user_id, "category": category, "abstract": abstract };
 
     // var jsondata = JSON.stringify(data);
 
@@ -827,7 +828,7 @@ function addImageData(login_user_id) {
         url: "insert_imginfo.php",
         type: "POST",
         dataType: "text",
-        data: { "img_name": img_name, "img_data": img_data, "user_id": user_id, "category": category, "abstract": abstract },
+        data: { "img_name": img_name, "img_data": img_data, "user_id": login_user_id, "category": category, "abstract": abstract },
         scriptCharset: 'utf-8',
         error: function (XMLHttpRequest, textStatus, errorThrown) {
             console.log("ajax通信に失敗しました");
@@ -849,19 +850,19 @@ function loadUserData(login_user_id) {
 }
 
 
-function createXmlHttpRequest() {
-    var xmlhttp = null;
-    if (window.ActiveXObject) {
-        try {
-            xmlhttp = new ActiveXObject("Msxml2.XMLHTTP");
-        } catch (e) {
-            try {
-                xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
-            } catch (e2) {
-            }
-        }
-    } else if (window.XMLHttpRequest) {
-        xmlhttp = new XMLHttpRequest();
-    }
-    return xmlhttp;
-};
+// function createXmlHttpRequest() {
+//     var xmlhttp = null;
+//     if (window.ActiveXObject) {
+//         try {
+//             xmlhttp = new ActiveXObject("Msxml2.XMLHTTP");
+//         } catch (e) {
+//             try {
+//                 xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+//             } catch (e2) {
+//             }
+//         }
+//     } else if (window.XMLHttpRequest) {
+//         xmlhttp = new XMLHttpRequest();
+//     }
+//     return xmlhttp;
+// };
