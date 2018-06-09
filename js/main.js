@@ -367,7 +367,7 @@ function btnAction(login_user_id) {
         }
     });
 
-    $(document).on("click", ".del", function () {
+    $(document).on("click", ".del_btn", function () {
         const id = $(this).attr("id");
         src = $("#" + id).attr('src');
 
@@ -386,6 +386,8 @@ function btnAction(login_user_id) {
                 // console.log("ajax通信に成功しました");
             }
         });
+        window.location.href = "main.php";
+
     });
 
 
