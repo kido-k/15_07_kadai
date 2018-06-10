@@ -15,6 +15,7 @@ chk_ssid();
     <script src="https://www.gstatic.com/firebasejs/4.12.1/firebase.js"></script>
     <script src="js/jquery-2.1.3.min.js"></script>
     <script src="js/main.js"></script>
+    <script src="js/acces_server.js"></script>
     <link rel="shortcut icon" href="img/post.jpg">
     <link rel="stylesheet" href="css/style.css">
     <title>POST</title>

@@ -12,7 +12,7 @@ $(function () {
 
     if (login_user_id != null) {
         loadUserData(login_user_id);
-    } else{
+    } else {
         window.location.href = "demo_main.php";
     };
 
@@ -88,113 +88,49 @@ function btnAction(login_user_id) {
         }
     });
 
-    $(".follow").on("click", function () {
+    //動的classはこの書き方じゃないと反応しない
+    $(document).on("click", ".follow", function () {
         const id = $(this).attr("id");
         if ($("#" + id).html() == 'Follow NOW') {
             $("#" + id).html("Follow ME");
             $("#" + id).css({ background: '#FFF', color: '#1da1f2' });
-
             const uid = id.replace('follow', 'user');
             const follow_user_id = $("#" + uid).html();
+            delete_follower(login_user_id, follow_user_id);
 
-            $.ajax({
-                url: "delete_follower.php",
-                type: "POST",
-                dataType: "text",
-                data: { "user_id": login_user_id, "follow_user_id": follow_user_id },
-                scriptCharset: 'utf-8',
-                error: function (XMLHttpRequest, textStatus, errorThrown) {
-                    console.log("ajax通信に失敗しました");
-                },
-                success: function (res) {
-                    // console.log("ajax通信に成功しました");
-                }
-            });
         } else {
             $("#" + id).html("Follow NOW");
             $("#" + id).css({ background: '#1da1f2', color: '#FFF' });
-
             const uid = id.replace('follow', 'user');
             const follow_user_id = $("#" + uid).html();
-
-            $.ajax({
-                url: "insert_follower.php",
-                type: "POST",
-                dataType: "text",
-                data: { "user_id": login_user_id, "follow_user_id": follow_user_id },
-                scriptCharset: 'utf-8',
-                error: function (XMLHttpRequest, textStatus, errorThrown) {
-                    // console.log("ajax通信に失敗しました");
-                },
-                success: function (res) {
-                    // console.log("ajax通信に成功しました");
-                }
-            });
+            insert_imginfo(login_user_id, follow_user_id);
         }
     });
 
-    $(".good").on("click", function () {
+    //動的classはこの書き方じゃないと反応しない
+    $(document).on("click", ".good", function () {
         const id = $(this).attr("id");
         src = $("#" + id).attr('src');
-
-        const imgid = id.replace('good', '');
+        const img_id = id.replace('good', '');
 
         if (src == 'img/heart_red.png') {
             $("#" + id).attr('src', 'img/heart_blank.png');
-            $.ajax({
-                url: "delete_good.php",
-                type: "POST",
-                dataType: "text",
-                data: { "user_id": login_user_id, "img_id": imgid },
-                scriptCharset: 'utf-8',
-                error: function (XMLHttpRequest, textStatus, errorThrown) {
-                    // console.log("ajax通信に失敗しました");
-                },
-                success: function (res) {
-                    // console.log("ajax通信に成功しました");
-                }
-            });
+            delete_good(login_user_id, img_id);
         } else {
             $("#" + id).attr('src', 'img/heart_red.png');
-            $.ajax({
-                url: "insert_good.php",
-                type: "POST",
-                dataType: "text",
-                data: { "user_id": login_user_id, "img_id": imgid },
-                scriptCharset: 'utf-8',
-                error: function (XMLHttpRequest, textStatus, errorThrown) {
-                    // console.log("ajax通信に失敗しました");
-                },
-                success: function (res) {
-                    // console.log("ajax通信に成功しました");
-                }
-            });
-        }
+            insert_good(login_user_id, img_id);
+        };
     });
 
     $(".del_btn").on("click", function () {
         const id = $(this).attr("id");
         src = $("#" + id).attr('src');
+        const img_id = id.replace('del_', '');
 
-        const imgid = id.replace('del_', '');
+        delete_imginfo(img_id)
 
-        $.ajax({
-            url: "delete_imginfo.php",
-            type: "POST",
-            dataType: "text",
-            data: { "img_id": imgid },
-            scriptCharset: 'utf-8',
-            error: function (XMLHttpRequest, textStatus, errorThrown) {
-                // console.log("ajax通信に失敗しました");
-            },
-            success: function (res) {
-                // console.log("ajax通信に成功しました");
-            }
-        });
         window.location.href = "main.php";
     });
-
-
 
     //homeボタン
     $("#home_button").on("click", function () {
@@ -361,202 +297,50 @@ function handleDragOver(evt) {
 }
 
 //☆JSONでのやり取りに書き換える
-function loadUserInfo(login_user_id) {
-    $.ajax({
-        url: "select_userinfo.php",
-        type: "POST",
-        dataType: "text",
-        data: { 'user_id': login_user_id },
-        error: function (XMLHttpRequest, textStatus, errorThrown) {
-            // console.log("ajax通信に失敗しました");
-        },
-        success: function (res) {
-            // console.log("ajax通信に成功しました");
-            const result = JSON.parse(res);
-            $("#accountname").html(result[0].account);
-            $("#logout").css({ display: 'inline-block' });
-        }
-    });
-};
-
-function loadUserImageCount(login_user_id) {
-    $.ajax({
-        url: "select_userimgcount.php",
-        type: "POST",
-        dataType: "text",
-        data: { 'user_id': login_user_id },
-        error: function (XMLHttpRequest, textStatus, errorThrown) {
-            console.log("ajax通信に失敗しました");
-        },
-        success: function (res) {
-            // console.log("ajax通信に成功しました");
-            const result = JSON.parse(res);
-            $("#imagenum").html(result[0].num);
-        }
-    });
-};
-
-function loadUserGoodCount(login_user_id) {
-    $.ajax({
-        url: "select_usergoodcount.php",
-        type: "POST",
-        dataType: "text",
-        data: { 'user_id': login_user_id },
-        error: function (XMLHttpRequest, textStatus, errorThrown) {
-            console.log("ajax通信に失敗しました");
-        },
-        success: function (res) {
-            // console.log("ajax通信に成功しました");
-            const result = JSON.parse(res);
-            $("#good").html(result[0].num);
-        }
-    });
-};
-
-function loadUserFollowCount(login_user_id) {
-    $.ajax({
-        url: "select_userfollowcount.php",
-        type: "POST",
-        dataType: "text",
-        data: { 'user_id': login_user_id },
-        error: function (XMLHttpRequest, textStatus, errorThrown) {
-            console.log("ajax通信に失敗しました");
-        },
-        success: function (res) {
-            // console.log("ajax通信に成功しました");
-            const result = JSON.parse(res);
-            $("#follower").html(result[0].num);
-        }
-    });
-};
-
-function loadAllImage(login_user_id) {
-    var result = "";
-    $.ajax({
-        url: "select_allimginfo.php",
-        type: "POST",
-        dataType: "text",
-        error: function (XMLHttpRequest, textStatus, errorThrown) {
-            console.log("ajax通信に失敗しました");
-        },
-        success: function (res) {
-            // console.log("ajax通信に成功しました");
-            // console.log(res);
-            result = JSON.parse(res);
-            // console.log(result[0]);
-            var img_id = "";
-            for (i = 0; i < result.length; i++) {
-                img_id = result[i].img_id;
-                $("#imglist").append('<div style="display:flex;"><h2 id="' + 'img_name' + img_id + '" style="height:30px;width:75%;margin:0;margin-left:20px;margin-top: 20px;">' + result[i].img_name + '</h2>'
-                    + '<h2 id="' + 'sysdate' + img_id + '" style="height:30px;width:20%;margin:0;text-align:right;margin-top: 20px;">' + result[i].sysdate + '</h2></div>');
-                $("#imglist").append('<div style="display:flex;"><h3 id="' + 'account' + img_id + '" style="margin:0;margin-left:20px;">' + 'by ' + result[i].account + '</h3>'
-                    + '<p id="' + 'follow' + img_id + '" class="follow" style="font-size:12px;margin:0;margin-left:50px;cursor:pointer;border-radius:50px;background-color:#FFF;border:1px solid #1da1f2;color:#1da1f2;width:90px; text-align:center">FOLLOW ME</p>'
-                    + '<p style="font-size:12px;margin:0;margin-left:50px">いいね</p><img id="' + 'good' + img_id + '"src="img/heart_blank.png" class="good" style="height:15px;width:15px;margin:0;margin-left:10px;cursor:pointer;"></div>');
-                $("#imglist").append('<div id="' + 'img' + img_id + '" style="display:flex; height:220px;margin-left:15px;"></div>');
-                $("#" + 'img' + img_id).append('<div class="del" style="display:none;width:5%;"><p id="del_' + result[i].img_id + '" class="del_btn" style="cursor: pointer;font-size:30px;text-align:center;">☒</p></div>');
-                $("#" + 'img' + img_id).append('<div style="width:15%;"><img id=imgdata"' + img_id + '" src="' + result[i].img_data + '" style="margin:10px 10px;object-fit:contain;max-width:90%;max-height:200px;"></div>');
-                $("#" + 'img' + img_id).append('<text id="' + 'abstract' + img_id + '" style="height:195px; margin:10px 10px; width:45%;border-style:solid;border-width:0.5px;padding:5px;overflow: auto;" readonly>' + result[i].abstract + '</text>');
-                $("#" + 'img' + img_id).append('<div id=msg' + img_id + '" style="height:175px; margin:10px 10px; width:35%;">' + '</div>');
-                $("#" + 'img' + img_id).append('<div style="display:none"><p id="user' + img_id + '">' + result[i].user_id + '</p></div>');
-            };
-        }
-    });
-};
-
-function loadUserImage(login_user_id) {
-    var result = "";
-    $.ajax({
-        url: "select_userimginfo.php",
-        type: "POST",
-        dataType: "text",
-        data: { 'user_id': login_user_id },
-        error: function (XMLHttpRequest, textStatus, errorThrown) {
-            console.log("ajax通信に失敗しました");
-        },
-        success: function (res) {
-            // console.log("ajax通信に成功しました");
-            // console.log(res);
-            result = JSON.parse(res);
-            // console.log(result[0]);
-            var img_id = "";
-            for (i = 0; i < result.length; i++) {
-                img_id = result[i].img_id;
-                $("#imglist").append('<div style="display:flex;"><h2 id="' + 'img_name' + img_id + '" style="height:30px;width:75%;margin:0;margin-left:20px;margin-top: 20px;">' + result[i].img_name + '</h2>'
-                    + '<h2 id="' + 'sysdate' + img_id + '" style="height:30px;width:20%;margin:0;text-align:right;margin-top: 20px;">' + result[i].sysdate + '</h2></div>');
-                $("#imglist").append('<div style="display:flex;"><h3 id="' + 'account' + img_id + '" style="margin:0;margin-left:20px;">' + 'by ' + result[i].account + '</h3>');
-                $("#imglist").append('<div id="' + 'img' + img_id + '" style="display:flex; height:220px;"></div>');
-                $("#" + 'img' + img_id).append('<div class="del" style="display:none;width:5%;"><p id="del_' + result[i].img_id + '" class="del_btn" style="cursor: pointer;font-size:30px;text-align:center;">☒</p></div>');
-                $("#" + 'img' + img_id).append('<div style="width:15%;"><img id=imgdata"' + img_id + '" src="' + result[i].img_data + '" style="margin:10px 10px;object-fit:contain;max-width:90%;max-height:220px;"></div>');
-                $("#" + 'img' + img_id).append('<text id="' + 'abstract' + img_id + '" style="height:195px; margin:10px 10px; width:45%;border-style:solid;border-width:0.5px;padding:5px;overflow: auto;" readonly>' + result[i].abstract + '</text>');
-                $("#" + 'img' + img_id).append('<div id=msg' + img_id + '" style="height:175px; margin:10px 10px; width:35%;">' + '</div>');
-            };
-        }
-    });
-};
-
-function loadSearchImage(searchword) {
-    var result = "";
-    $.ajax({
-        url: "select_searchimginfo.php",
-        type: "POST",
-        dataType: "text",
-        data: { 'searchword': searchword },
-        error: function (XMLHttpRequest, textStatus, errorThrown) {
-            console.log("ajax通信に失敗しました");
-        },
-        success: function (res) {
-            // console.log("ajax通信に成功しました");
-            // console.log(res);
-            result = JSON.parse(res);
-            // console.log(result[0]);
-            var img_id = "";
-            for (i = 0; i < result.length; i++) {
-                img_id = result[i].img_id;
-                $("#imglist").append('<div style="display:flex;"><h2 id="' + 'img_name' + img_id + '" style="height:30px;width:75%;margin:0;margin-left:20px;margin-top: 20px;">' + result[i].img_name + '</h2>'
-                    + '<h2 id="' + 'sysdate' + img_id + '" style="height:30px;width:20%;margin:0;text-align:right;margin-top: 20px;">' + result[i].sysdate + '</h2></div>');
-                $("#imglist").append('<div style="display:flex;"><h3 id="' + 'account' + img_id + '" style="margin:0;margin-left:20px;">' + 'by ' + result[i].account + '</h3>'
-                    + '<p id="' + 'follow' + img_id + '" class="follow" style="font-size:12px;margin:0;margin-left:50px;cursor:pointer;border-radius:50px;background-color:#FFF;border:1px solid #1da1f2;color:#1da1f2;width:90px; text-align:center">FOLLOW ME</p>'
-                    + '<p style="font-size:12px;margin:0;margin-left:50px">いいね</p><img id="' + 'good' + img_id + '"src="img/heart_blank.png" class="good" style="height:15px;width:15px;margin:0;margin-left:10px;cursor:pointer;"></div>');
-                $("#imglist").append('<div id="' + 'img' + img_id + '" style="display:flex; height:220px;"></div>');
-                $("#" + 'img' + img_id).append('<div class="del" style="display:none;width:5%;"><p id="del_' + result[i].img_id + '" class="del_btn" style="cursor: pointer;font-size:30px;text-align:center;">☒</p></div>');
-                $("#" + 'img' + img_id).append('<div style="width:15%;"><img id=imgdata"' + img_id + '" src="' + result[i].img_data + '" style="margin:10px 10px;object-fit:contain;max-width:90%;max-height:220px;"></div>');
-                $("#" + 'img' + img_id).append('<text id="' + 'abstract' + img_id + '" style="height:195px; margin:10px 10px; width:45%;border-style:solid;border-width:0.5px;padding:5px;overflow: auto;" readonly>' + result[i].abstract + '</text>');
-                $("#" + 'img' + img_id).append('<div id=msg' + img_id + '" style="height:175px; margin:10px 10px; width:35%;">' + '</div>');
-                $("#" + 'img' + img_id).append('<div style="display:none"><p id="user' + img_id + '">' + result[i].user_id + '</p></div>');
-            };
-        }
-    });
-};
-
-//☆JSONでのやり取りに書き換える
 function addImageData(login_user_id) {
     const img_name = $("#img_name").val();
     const img_data = $("#img_url").val();
     const category = $("#category").val();
     const abstract = $("#abstract").val();
-
-    var data = { "img_name": img_name, "img_data": img_data, "user_id": login_user_id, "category": category, "abstract": abstract };
-
-    $.ajax({
-        url: "insert_imginfo.php",
-        type: "POST",
-        dataType: "text",
-        data: { "img_name": img_name, "img_data": img_data, "user_id": login_user_id, "category": category, "abstract": abstract },
-        scriptCharset: 'utf-8',
-        error: function (XMLHttpRequest, textStatus, errorThrown) {
-            console.log("ajax通信に失敗しました");
-        },
-        success: function (res) {
-        }
-    });
+    var senddata = { "img_name": img_name, "img_data": img_data, "user_id": login_user_id, "category": category, "abstract": abstract };
+    insert_imginfo(senddata);
 };
 
 function loadUserData(login_user_id) {
     $("#imglist").empty();
     loadUserInfo(login_user_id);
     loadUserImageCount(login_user_id);
-    loadAllImage(login_user_id);
+    loadAllImage();
     loadUserGoodCount(login_user_id);
     loadUserFollowCount(login_user_id);
-    // loadUserImage(user_id);
-}
+};
+
+function loadUserInfo(login_user_id) {
+    select_userinfo(login_user_id);
+};
+
+function loadUserImageCount(login_user_id) {
+    select_userimgcount(login_user_id);
+};
+
+function loadUserGoodCount(login_user_id) {
+    select_usergoodcount(login_user_id);
+};
+
+function loadUserFollowCount(login_user_id) {
+    select_userfollowcount(login_user_id)
+};
+
+function loadAllImage() {
+    select_allimginfo();
+};
+
+function loadUserImage(login_user_id) {
+    const searchword = "";
+    select_userimginfo(login_user_id, searchword);
+};
+
+function loadSearchImage(searchword) {
+    const login_user_id = "";
+    select_userimginfo(login_user_id, searchword);
+};
