@@ -1,6 +1,12 @@
 <?php
 
 include 'ChromePhp.php';
+include 'functions.php';
+
+session_start();
+//0.外部ファイル読み込み
+include("functions.php");
+chk_ssid();
 
 if(
   !isset($_POST["account"]) || $_POST["account"]=="" ||
@@ -22,11 +28,7 @@ $gender = $_POST["gender"];
 $age = $_POST["age"];
 
 //2. DB接続します
-try {
-  $pdo = new PDO('mysql:dbname=gs_db;charset=utf8;host=localhost','root','');
-} catch (PDOException $e) {
-  exit('DbConnectError:'.$e->getMessage());
-}
+$pdo = db_con();
 
 
 //３．データ登録SQL作成

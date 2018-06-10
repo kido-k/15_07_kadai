@@ -1,5 +1,12 @@
+<?php
+session_start();
+//0.外部ファイル読み込み
+include("functions.php");
+chk_ssid();
+?>
+
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ja">
 
 <head>
     <meta charset="UTF-8">

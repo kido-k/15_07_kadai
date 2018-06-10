@@ -26,47 +26,14 @@ $(function () {
     firebase.initializeApp(config);
 
     // ログイン中かどうかの判定
-    const login_user_id = localStorage.getItem("login_user_id");
-
-    //LocalStrageにloginidを保存
-    // googleLogin(firebase).done(function (result) {   //deferredを入れてみたもののうまく動かず、、現状問題なし
-    // }).fail(function (e) {
-    //     console.log(e);
-    // });
-
-    // MSGデータ受信
-    // child_added:毎回１個
-    // value:毎回すべてのデータを取得
-    // ref.on("child_added", function (data) {
-    //     var val = data.val();
-    // });
-
-    userinfo = firebase.database().ref('/userinfo/' + login_user_id);
-
-    // userinfo.on("value", function (data) {
-    //     receiveData(data);
-    // });
+    const login_user_id = sessionStorage.getItem("login_user_id");
 
     if (login_user_id != null) {
         loadUserData(login_user_id);
     } else {
         $("#imglist").empty();
-        loadAllImage();
+        loadAllImage(login_user_id);
     };
-
-    // Submit:MSG送信
-    $("#check").on("click", function () {
-        sendData(ref);
-    });
-
-    $("#test").on("click", function () {
-        newsendData(login_user_id);
-    });
-
-    // //EnterKeyで送信する
-    // $("#imglist").on("keydown", function () {
-    //     sendData(ref);
-    // });
 
     //EnterKeyで送信する
     $("#search").keyup(function (event) {
@@ -91,111 +58,18 @@ $(function () {
 
     //変更画像の読み込み保存
     dragFile();
-    // icondragFile();
 
-    //ログイン
-    $("#login").on("click", function () {
-        // const xmlhttp = createXmlHttpRequest();
-        $.ajax({
-            url: "select_userlogin.php",
-            type: "POST",
-            dataType: "text",
-            data: { 'email': $('#email').val(), 'password': $('#pass').val() },
-            error: function (XMLHttpRequest, textStatus, errorThrown) {
-                // console.log("ajax通信に失敗しました");
-            },
-            success: function (res) {
-                // console.log("ajax通信に成功しました");
-                localStorage.setItem("login_user_id", res);
-                $("#loginmenu").css({ display: 'none' });
-                // $("#sidebar").css({ display: 'inline-block' });
-                $("#logout").css({ display: 'inline-block' });
-                loadUserData(res);
-            }
-        });
-    });
-
+    //新規アカウント作成
     $("#makeaccount").on("click", function () {
         window.location.href = "entry.php";
     });
 
     //ログアウト
     $("#logout").on("click", function () {
-        localStorage.removeItem("login_user_id");
-        location.reload();
-        $("#loginmenu").css({ display: 'inline-block' });
-        $("#sidebar").css({ display: 'none' });
-        login = false;
+        window.sessionStorage.clear();
+        window.location.href = "demo_main.php";
     });
-
-    // $("#check2").on("click", function () {
-    //     $("#dialogflow").css({ display: 'none' });
-    //     $("#bord_content").css({ display: 'iniine' });
-    //     $("#message").css({ display: 'iniine' });
-    //     $("#command").css({ display: 'iniine' });
-    // });
 });
-
-//データ受信処理
-function receiveData(data) {
-    if (data != null) {
-        var data = data.val();
-        $("#username").text(data.username);
-        // console.log(data);
-    } else {
-        $("#username").text("999999")
-    }
-
-    // var str = '<dl id="' + k + '">';
-    // str += '<dt>' + v.username + '</dt>';
-    // str += '<dd>' + v.reserve + '</dd>';
-    // str += '</dl>';
-    // $("#output").prepend(str);
-};
-
-//データ送信処理
-function sendData(ref) {
-    const account = $("#accountname").html();
-    const image = "テスト";
-    const msg = "メッセージ";
-    if (account != null && image != null && msg != null && account != "" && image != "" && msg != "") {
-        ref.push({
-            account: account,
-            image: image,
-            msg: msg
-        });
-    }
-    // $("#message").val("");
-}
-
-function newsendData(login_user_id) {
-    const storageRef = firebase.storage().ref();
-    const userimage = storageRef.child("106727328335850617879userimage");
-    var userimage_url = "テスト";
-    // if (userimage != null) {
-    //     userimage.getDownloadURL().then(function (url) {
-    //         // $('#userimage').attr('src', url);
-    //         userimage_url = url;
-    //     }).catch(function (error) {
-    //         console.log(error);
-    //     });
-    // }
-
-    const img_chat = firebase.database().ref('/chat/' + login_user_id + '/' + 'imgdata0');
-    const account = $("#accountname").html();
-    const image = userimage_url;
-    const msg = $("#test_text").val();
-    if (account != null && image != null && msg != null && account != "" && image != "" && msg != "") {
-        img_chat.push({
-            account: account,
-            image: image,
-            msg: msg
-        });
-    }
-    // $("#message").val("");
-}
-
-
 
 function controlMenu() {
     var displayLoginBar = false;
@@ -227,39 +101,6 @@ function controlMenu() {
             displayMenuBar = true;
         }
     });
-
-    var displayMenu1 = false;
-    $("#menu1").on("click", function () {
-        if (displayMenu1) {
-            $("#childmenu1").css({ display: 'none' });
-            displayMenu1 = false;
-        } else {
-            $("#childmenu1").css({ display: 'inline' });
-            displayMenu1 = true;
-        }
-    });
-
-    var displayMenu2 = false;
-    $("#menu2").on("click", function () {
-        if (displayMenu2) {
-            $("#childmenu2").css({ display: 'none' });
-            displayMenu2 = false;
-        } else {
-            $("#childmenu2").css({ display: 'inline' });
-            displayMenu2 = true;
-        }
-    });
-
-    var displayMenu3 = false;
-    $("#menu3").on("click", function () {
-        if (displayMenu3) {
-            $("#childmenu3").css({ display: 'none' });
-            displayMenu3 = false;
-        } else {
-            $("#childmenu3").css({ display: 'inline' });
-            displayMenu3 = true;
-        }
-    });
 }
 
 function btnAction(login_user_id) {
@@ -283,7 +124,7 @@ function btnAction(login_user_id) {
         }
     });
 
-    $(document).on("click", ".follow", function () {
+    $(".follow").on("click", function () {
         const id = $(this).attr("id");
         if ($("#" + id).html() == 'Follow NOW') {
             $("#" + id).html("Follow ME");
@@ -328,7 +169,7 @@ function btnAction(login_user_id) {
         }
     });
 
-    $(document).on("click", ".good", function () {
+    $(".good").on("click", function () {
         const id = $(this).attr("id");
         src = $("#" + id).attr('src');
 
@@ -367,7 +208,7 @@ function btnAction(login_user_id) {
         }
     });
 
-    $(document).on("click", ".del_btn", function () {
+    $(".del_btn").on("click", function () {    
         const id = $(this).attr("id");
         src = $("#" + id).attr('src');
 
@@ -442,7 +283,7 @@ function btnAction(login_user_id) {
     $("#mode").on("change", function () {
         if ($("#mode").val() == 0) {
             $("#imglist").empty();
-            loadAllImage();
+            loadAllImage(login_user_id);
             $("#add_button").css({ display: 'none' });
             $("#delete_button").css({ display: 'none' });
         } else if ($("#mode").val() == 1) {
@@ -475,24 +316,24 @@ function btnAction(login_user_id) {
 //     }
 // }
 
-// function uploadImageData(firebase, login_user_id, position) {
-//     // var mountainImagesRef = storageRef.child("imgs/monkey.png");
-//     if (files != null && position == "uimage") {
-//         const dragfile = files[0];
-//         const storageRef = firebase.storage().ref(login_user_id + "userimage");
-//         storageRef.put(dragfile).then(function (snapshot) {
-//             alert("保存しました");
-//         });
-//         userimage_url = pre_userimage_url;
-//     } else if (iconfiles != null && position == "iconimage") {
-//         const iconfile = iconfiles[0];
-//         const storageRef = firebase.storage().ref(login_user_id + "iconimage");
-//         storageRef.put(iconfile).then(function (snapshot) {
-//             alert("保存しました");
-//         });
-//         signbord_url = pre_signbord_url;
-//     }
-// }
+function uploadImageData(firebase, login_user_id, position) {
+    // var mountainImagesRef = storageRef.child("imgs/monkey.png");
+    if (files != null && position == "uimage") {
+        const dragfile = files[0];
+        const storageRef = firebase.storage().ref(login_user_id + "userimage");
+        storageRef.put(dragfile).then(function (snapshot) {
+            alert("保存しました");
+        });
+        userimage_url = pre_userimage_url;
+    } else if (iconfiles != null && position == "iconimage") {
+        const iconfile = iconfiles[0];
+        const storageRef = firebase.storage().ref(login_user_id + "iconimage");
+        storageRef.put(iconfile).then(function (snapshot) {
+            alert("保存しました");
+        });
+        signbord_url = pre_signbord_url;
+    }
+}
 
 function dragFile() {
     // Setup the dnd listeners.
@@ -538,38 +379,6 @@ function dragFile() {
     }
 }
 
-function icondragFile() {
-    // Setup the dnd listeners.
-    var icondropZone = document.getElementById('icon_drop_zone');
-    icondropZone.addEventListener('dragover', handleDragOver, false);
-    icondropZone.addEventListener('drop', handleFileSelect, false);
-
-    function handleFileSelect(evt) {
-        evt.stopPropagation();
-        evt.preventDefault();
-        evt.dataTransfer.dropEffect = 'copy';
-        // console.log(evt);
-
-        iconfiles = evt.dataTransfer.files; // FileList object.
-        var file = iconfiles[0];
-
-        var reader = new FileReader();
-        //dataURL形式でファイルを読み込む
-        reader.readAsDataURL(file);
-        //ファイルの読込が終了した時の処理
-        reader.onload = function () {
-            // readImage(reader);
-            var result_DataURL = reader.result;
-            pre_signbord_url = reader.result;
-            $('#icon_image').attr('src', result_DataURL);
-            $("#icon_image").css({ display: 'inline-block' });
-            $("#icon_msg").css({ display: 'none' });
-            $("#icon_save").css({ 'background-color': "#ffa653" });
-            $("#icon_save").css({ border: "1px solid #ffa653" });
-        }
-    }
-}
-
 function readImage(reader) {
     //ファイル読み取り後の処理
     var result_DataURL = reader.result;
@@ -588,30 +397,8 @@ function handleDragOver(evt) {
     evt.dataTransfer.dropEffect = 'copy'; // Explicitly show this is a copy.
 }
 
-function controlMassege(id) {
-    signbordmsg = firebase.database().ref('/signbord/' + id);
-    const imgsrc = $("#userimage").attr('src');
-    // var image = {
-    //     url: imgsrc,
-    //     scaledSize: new google.maps.Size(42, 42)
-    // };
-    signbordmsg.on("child_added", function (data) {
-        var v = data.val();
-        var k = data.key;
-
-        var str = '<dl id="' + k + '">';
-        str += '<img src=' + imgsrc + '" width="50"><br>';
-        str += '<dt>' + v.username + '</dt>';
-        str += '<dd>' + v.text + '</dd>';
-        str += '</dl>';
-        $("#bord_content").prepend(str);
-    });
-};
-
 //☆JSONでのやり取りに書き換える
 function loadUserInfo(login_user_id) {
-    // const login_user_id = localStorage.getItem("login_user_id");
-    // const login_user_id = "2";
     $.ajax({
         url: "select_userinfo.php",
         type: "POST",
@@ -624,7 +411,7 @@ function loadUserInfo(login_user_id) {
             // console.log("ajax通信に成功しました");
             const result = JSON.parse(res);
             $("#accountname").html(result[0].account);
-            // localStorage.setItem("login_user_id",res);
+            // sessionStorage.setItem("login_user_id",res);
             $("#loginmenu").css({ display: 'none' });
             // $("#sidebar").css({ display: 'inline-block' });
             $("#logout").css({ display: 'inline-block' });
@@ -634,15 +421,13 @@ function loadUserInfo(login_user_id) {
 };
 
 function loadUserImageCount(login_user_id) {
-    // const login_user_id = localStorage.getItem("login_user_id");
-    // const login_user_id = "2";
     $.ajax({
         url: "select_userimgcount.php",
         type: "POST",
         dataType: "text",
         data: { 'user_id': login_user_id },
         error: function (XMLHttpRequest, textStatus, errorThrown) {
-            // console.log("ajax通信に失敗しました");
+            console.log("ajax通信に失敗しました");
         },
         success: function (res) {
             // console.log("ajax通信に成功しました");
@@ -653,15 +438,13 @@ function loadUserImageCount(login_user_id) {
 };
 
 function loadUserGoodCount(login_user_id) {
-    // const login_user_id = localStorage.getItem("login_user_id");
-    // const login_user_id = "2";
     $.ajax({
         url: "select_usergoodcount.php",
         type: "POST",
         dataType: "text",
         data: { 'user_id': login_user_id },
         error: function (XMLHttpRequest, textStatus, errorThrown) {
-            // console.log("ajax通信に失敗しました");
+            console.log("ajax通信に失敗しました");
         },
         success: function (res) {
             // console.log("ajax通信に成功しました");
@@ -672,15 +455,13 @@ function loadUserGoodCount(login_user_id) {
 };
 
 function loadUserFollowCount(login_user_id) {
-    // const login_user_id = localStorage.getItem("login_user_id");
-    // const login_user_id = "2";
     $.ajax({
         url: "select_userfollowcount.php",
         type: "POST",
         dataType: "text",
         data: { 'user_id': login_user_id },
         error: function (XMLHttpRequest, textStatus, errorThrown) {
-            // console.log("ajax通信に失敗しました");
+            console.log("ajax通信に失敗しました");
         },
         success: function (res) {
             // console.log("ajax通信に成功しました");
@@ -690,14 +471,14 @@ function loadUserFollowCount(login_user_id) {
     });
 };
 
-function loadAllImage() {
+function loadAllImage(login_user_id) {
     var result = "";
     $.ajax({
         url: "select_allimginfo.php",
         type: "POST",
         dataType: "text",
         error: function (XMLHttpRequest, textStatus, errorThrown) {
-            // console.log("ajax通信に失敗しました");
+            console.log("ajax通信に失敗しました");
         },
         success: function (res) {
             // console.log("ajax通信に成功しました");
@@ -716,9 +497,8 @@ function loadAllImage() {
                 $("#" + 'img' + img_id).append('<div class="del" style="display:none;width:5%;"><p id="del_' + result[i].img_id + '" class="del_btn" style="cursor: pointer;font-size:30px;text-align:center;">☒</p></div>');
                 $("#" + 'img' + img_id).append('<div style="width:15%;"><img id=imgdata"' + img_id + '" src="' + result[i].img_data + '" style="margin:10px 10px;object-fit:contain;max-width:90%;max-height:200px;"></div>');
                 $("#" + 'img' + img_id).append('<text id="' + 'abstract' + img_id + '" style="height:195px; margin:10px 10px; width:45%;border-style:solid;border-width:0.5px;padding:5px;overflow: auto;" readonly>' + result[i].abstract + '</text>');
-                $("#" + 'img' + img_id).append('<div id=msg"' + img_id + '" style="height:175px; margin:10px 10px; width:35%;">' + '</div>');
+                $("#" + 'img' + img_id).append('<div id=msg' + img_id + '" style="height:175px; margin:10px 10px; width:35%;">' + '</div>');
                 $("#" + 'img' + img_id).append('<div style="display:none"><p id="user' + img_id + '">' + result[i].user_id + '</p></div>');
-                // loadMsg(login_user_id, img_id, i);
             };
         }
     });
@@ -732,7 +512,7 @@ function loadUserImage(login_user_id) {
         dataType: "text",
         data: { 'user_id': login_user_id },
         error: function (XMLHttpRequest, textStatus, errorThrown) {
-            // console.log("ajax通信に失敗しました");
+            console.log("ajax通信に失敗しました");
         },
         success: function (res) {
             // console.log("ajax通信に成功しました");
@@ -749,15 +529,10 @@ function loadUserImage(login_user_id) {
                 $("#" + 'img' + img_id).append('<div class="del" style="display:none;width:5%;"><p id="del_' + result[i].img_id + '" class="del_btn" style="cursor: pointer;font-size:30px;text-align:center;">☒</p></div>');
                 $("#" + 'img' + img_id).append('<div style="width:15%;"><img id=imgdata"' + img_id + '" src="' + result[i].img_data + '" style="margin:10px 10px;object-fit:contain;max-width:90%;max-height:220px;"></div>');
                 $("#" + 'img' + img_id).append('<text id="' + 'abstract' + img_id + '" style="height:195px; margin:10px 10px; width:45%;border-style:solid;border-width:0.5px;padding:5px;overflow: auto;" readonly>' + result[i].abstract + '</text>');
-                $("#" + 'img' + img_id).append('<div id=msg"' + img_id + '" style="height:175px; margin:10px 10px; width:35%;">' + '</div>');
-                // loadMsg(login_user_id, img_id, i);
+                $("#" + 'img' + img_id).append('<div id=msg' + img_id + '" style="height:175px; margin:10px 10px; width:35%;">' + '</div>');
             };
         }
     });
-    // $('.del_btn').on('click', function () {
-    //     const id = $(this).attr("id");
-    //     alert(id);
-    // });
 };
 
 function loadSearchImage(searchword) {
@@ -768,7 +543,7 @@ function loadSearchImage(searchword) {
         dataType: "text",
         data: { 'searchword': searchword },
         error: function (XMLHttpRequest, textStatus, errorThrown) {
-            // console.log("ajax通信に失敗しました");
+            console.log("ajax通信に失敗しました");
         },
         success: function (res) {
             // console.log("ajax通信に成功しました");
@@ -787,31 +562,10 @@ function loadSearchImage(searchword) {
                 $("#" + 'img' + img_id).append('<div class="del" style="display:none;width:5%;"><p id="del_' + result[i].img_id + '" class="del_btn" style="cursor: pointer;font-size:30px;text-align:center;">☒</p></div>');
                 $("#" + 'img' + img_id).append('<div style="width:15%;"><img id=imgdata"' + img_id + '" src="' + result[i].img_data + '" style="margin:10px 10px;object-fit:contain;max-width:90%;max-height:220px;"></div>');
                 $("#" + 'img' + img_id).append('<text id="' + 'abstract' + img_id + '" style="height:195px; margin:10px 10px; width:45%;border-style:solid;border-width:0.5px;padding:5px;overflow: auto;" readonly>' + result[i].abstract + '</text>');
-                $("#" + 'img' + img_id).append('<div id=msg"' + img_id + '" style="height:175px; margin:10px 10px; width:35%;">' + '</div>');
+                $("#" + 'img' + img_id).append('<div id=msg' + img_id + '" style="height:175px; margin:10px 10px; width:35%;">' + '</div>');
                 $("#" + 'img' + img_id).append('<div style="display:none"><p id="user' + img_id + '">' + result[i].user_id + '</p></div>');
-                // loadMsg(login_user_id, img_id, i);
             };
         }
-    });
-};
-
-function loadMsg(login_user_id, img_id, i) {
-    var storageRef = firebase.storage().ref();
-    const userimage = storageRef.child("106727328335850617879userimage");
-    if (userimage != null) {
-        userimage.getDownloadURL().then(function (url) {
-            userimage_url = url;
-        }).catch(function (error) {
-            console.log(error);
-        });
-    }
-    const img_chat = firebase.database().ref('/chat/' + login_user_id + '/' + img_id);
-    img_chat.on("child_added", function (data) {
-        const param = data.val();
-        $("#" + 'msg' + i).append('<div style="display:flex; overflow: auto;"><img style="margin: 0; height:20px; widht:20px;" src="' + userimage_url + '>' + '<p style="margin: 0; font-size:14px;">' + param.account + '</p></div>');
-        // $("#" + 'msg' + i).append('<div style="display:flex;"><img style="margin: 0;" src="' + param.image + '" style="height:50px; widht:50px;">');
-        // $("#" + 'msg' + i).append('<p style="margin: 0; font-size:10px;">' + param.account + '</p></div>');
-        $("#" + 'msg' + i).append('<p style="margin: 0; background-color: #bfe3f5;">' + param.msg + '</p>');
     });
 };
 
@@ -823,8 +577,6 @@ function addImageData(login_user_id) {
     const abstract = $("#abstract").val();
 
     var data = { "img_name": img_name, "img_data": img_data, "user_id": login_user_id, "category": category, "abstract": abstract };
-
-    // var jsondata = JSON.stringify(data);
 
     $.ajax({
         url: "insert_imginfo.php",
@@ -850,21 +602,3 @@ function loadUserData(login_user_id) {
     loadUserFollowCount(login_user_id);
     // loadUserImage(user_id);
 }
-
-
-// function createXmlHttpRequest() {
-//     var xmlhttp = null;
-//     if (window.ActiveXObject) {
-//         try {
-//             xmlhttp = new ActiveXObject("Msxml2.XMLHTTP");
-//         } catch (e) {
-//             try {
-//                 xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
-//             } catch (e2) {
-//             }
-//         }
-//     } else if (window.XMLHttpRequest) {
-//         xmlhttp = new XMLHttpRequest();
-//     }
-//     return xmlhttp;
-// };

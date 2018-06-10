@@ -1,21 +1,18 @@
 <?php
-include 'ChromePhp.php';
-include 'functions.php';
-
-session_start();
+// session_start();
 //0.外部ファイル読み込み
 include("functions.php");
-chk_ssid();
+// chk_ssid();
 
 //1.  DB接続します
 $pdo = db_con();
 
-$user_id=$_POST["user_id"];
+// $user_id=$_POST["user_id"];
 
 //２．データ登録SQL作成
-$sql = "SELECT ii.img_id, ii.img_name, ii.img_data, ii.user_id, ii.category, ii.abstract, ii.sysdate, ui.account FROM img_info ii INNER JOIN user_info ui ON ii.user_id = ui.user_id WHERE ii.user_id = :a1 order by ii.sysdate desc LIMIT 0, 30";
+$sql = "SELECT ii.img_id, ii.img_name, ii.img_data, ii.user_id, ii.category, ii.abstract, ii.sysdate, ui.account FROM img_info ii INNER JOIN user_info ui ON ii.user_id = ui.user_id order by ii.sysdate desc LIMIT 0, 30";
 $stmt = $pdo->prepare($sql);
-$stmt->bindValue(':a1', $user_id, PDO::PARAM_STR);
+// $stmt->bindValue(':a1', $user_id, PDO::PARAM_STR);
 $status = $stmt->execute();
 
 //３．データ表示
@@ -38,8 +35,8 @@ if($status==false) {
           'user_id' => $result['user_id'],
           'category' => $result['category'],
           'abstract' => $result['abstract'],
+          'sysdate' => $result['sysdate'],
           'account' => $result['account'],          
-          'sysdate' => $result['sysdate']
    );
   }
   // ChromePhp::log($imgData);

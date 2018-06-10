@@ -1,16 +1,18 @@
 <?php
-//1.  DB接続します
-try {
-  $pdo = new PDO('mysql:dbname=gs_db;charset=utf8;host=localhost','root','');
-} catch (PDOException $e) {
-  exit('DbConnectError:'.$e->getMessage());
-}
-
 include 'ChromePhp.php';
+include 'functions.php';
+
+session_start();
+//0.外部ファイル読み込み
+include("functions.php");
+chk_ssid();
+
+//1.  DB接続します
+$pdo = db_con();
 
 //２. POSTデータ取得
-ChromePhp::log($_POST['user_id']);
-ChromePhp::log($_POST['follow_user_id']);
+// ChromePhp::log($_POST['user_id']);
+// ChromePhp::log($_POST['follow_user_id']);
 
 //３．データ登録SQL作成
 
