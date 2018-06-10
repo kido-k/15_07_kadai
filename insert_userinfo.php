@@ -5,7 +5,6 @@ include 'functions.php';
 
 session_start();
 //0.外部ファイル読み込み
-include("functions.php");
 chk_ssid();
 
 if(

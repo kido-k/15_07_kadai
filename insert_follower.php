@@ -1,12 +1,8 @@
 <?php
 
+//0.外部ファイル読み込み
 include 'ChromePhp.php';
 include 'functions.php';
-
-session_start();
-//0.外部ファイル読み込み
-include("functions.php");
-chk_ssid();
 
 //1.  DB接続します
 $pdo = db_con();

@@ -50,12 +50,6 @@ chk_ssid();
 
     <!-- コンテンツ表示画面 -->
     <div id="main">
-        <div id="loginmenu">
-            <div><input id="email" type="text" placeholder="メールアドレス"></div>
-            <div><input id="pass" type="password" placeholder="パスワード"></div>
-            <div><button id="login">ログイン</button></div>
-            <div><button id="makeaccount">アカウント作成</button></div>
-        </div>
         <div id="sidebar">
             <div id="userinfo">
                 <img id="userimage" src="img/monkey.png" alt="">

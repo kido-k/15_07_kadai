@@ -1,5 +1,6 @@
 <?php
 /** 共通で使うものを別ファイルにしておきましょう。*/
+// include 'ChromePhp.php';
 
 //DB接続関数（PDO）
 function db_con(){
@@ -31,8 +32,12 @@ function h($str){
 //SESSIONチェック&リジェネレイト
 function chk_ssid(){
   if(!isset($_SESSION["chk_ssid"]) || $_SESSION["chk_ssid"] != session_id()){
-   exit("Login Error.");
+    // ChromePhp::log("失敗");
+    // ChromePhp::log($_SESSION["chk_ssid"]);
+    // ChromePhp::log($_SESSION[session_id()]);
+    exit("Login Error.");
   }else{
+    // ChromePhp::log("成功");
     session_regenerate_id(true);
     $_SESSION["chk_ssid"]=session_id();
   }
